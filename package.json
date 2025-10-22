@@ -1,0 +1,45 @@
+{
+  "name": "tutorial",
+  "version": "1.0.0",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "mcp:math": "tsx src/mcp/math-io.ts",
+    "mcp:weather": "tsx src/mcp/weather-http.ts",
+    "mcp:elasticsearch": "tsx src/rag/elasticsearch-mcp-server.ts",
+    "rag:server": "tsx src/rag/elasticsearch-mcp-server.ts",
+    "rag:case1": "tsx \"test/rag/case1:direct-rag-example.ts\"",
+    "rag:case2": "tsx \"test/rag/case2: agent-rag-example.ts\"",
+    "rag:case3": "tsx \"test/rag/case3: agent-mcp-example.ts\"",
+    "test-mcp-io": "tsx test/mcp/test-mcp-io-client.ts",
+    "test-mcp-http": "tsx test/mcp/test-mcp-http-client.ts",
+    "elasticsearch:start": "docker-compose -f scripts/es-mcp/docker-compose.yml up --build",
+    "elasticsearch:stop": "docker-compose -f scripts/es-mcp/docker-compose.yml down",
+    "elasticsearch:logs": "docker-compose -f scripts/es-mcp/docker-compose.yml logs -f",
+    "data:setup": "tsx src/rag/setup-data.ts"
+  },
+  "dependencies": {
+    "@elastic/elasticsearch": "^8.11.0",
+    "@google/generative-ai": "^0.24.1",
+    "@langchain/anthropic": "^1.0.0",
+    "@langchain/core": "^1.0.0-alpha.7",
+    "@langchain/google-genai": "^1.0.0",
+    "@langchain/mcp-adapters": "^1.0.0",
+    "@langchain/openai": "^1.0.0-alpha.3",
+    "@modelcontextprotocol/sdk": "^1.20.1",
+    "@types/node-fetch": "^2.6.13",
+    "dotenv": "^17.2.3",
+    "express": "^5.1.0",
+    "json-rpc-2.0": "^1.7.1",
+    "langchain": "^1.0.0-alpha.9",
+    "node-fetch": "^3.3.2",
+    "ts-node": "^10.9.2",
+    "tsx": "^4.19.2",
+    "typescript": "^5.9.3",
+    "zod": "^4.1.12"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.3",
+    "@types/node": "^24.9.1"
+  }
+}

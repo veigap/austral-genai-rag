@@ -1,0 +1,169 @@
+{
+  "info": {
+    "name": "MCP Weather Server",
+    "description": "Model Context Protocol (MCP) HTTP Server Examples\n\nThis collection demonstrates how to interact with an MCP server over HTTP using JSON-RPC 2.0 protocol.\n\n## Setup\n1. Start the MCP HTTP server: `yarn mcp-http`\n2. Server runs on: http://localhost:8000\n3. Endpoint: POST /mcp\n\n## JSON-RPC 2.0 Format\nAll requests follow the JSON-RPC 2.0 standard:\n```json\n{\n  \"jsonrpc\": \"2.0\",\n  \"id\": 1,\n  \"method\": \"method_name\",\n  \"params\": {...}\n}\n```",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "1. List Tools",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"jsonrpc\": \"2.0\",\n  \"id\": 1,\n  \"method\": \"tools/list\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:8000/mcp",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8000",
+          "path": ["mcp"]
+        },
+        "description": "Lists all available tools provided by the MCP server.\n\n**Expected Response:**\n```json\n{\n  \"jsonrpc\": \"2.0\",\n  \"id\": 1,\n  \"result\": {\n    \"tools\": [\n      {\n        \"name\": \"get_weather\",\n        \"description\": \"Get weather for location\",\n        \"inputSchema\": {\n          \"type\": \"object\",\n          \"properties\": {\n            \"location\": {\n              \"type\": \"string\",\n              \"description\": \"Location to get weather for\"\n            }\n          },\n          \"required\": [\"location\"]\n        }\n      }\n    ]\n  }\n}\n```"
+      },
+      "response": []
+    },
+    {
+      "name": "2. Get Weather - San Francisco",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"jsonrpc\": \"2.0\",\n  \"id\": 2,\n  \"method\": \"tools/call\",\n  \"params\": {\n    \"name\": \"get_weather\",\n    \"arguments\": {\n      \"location\": \"San Francisco\"\n    }\n  }\n}"
+        },
+        "url": {
+          "raw": "http://localhost:8000/mcp",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8000",
+          "path": ["mcp"]
+        },
+        "description": "Calls the `get_weather` tool with location \"San Francisco\".\n\n**Expected Response:**\n```json\n{\n  \"jsonrpc\": \"2.0\",\n  \"id\": 2,\n  \"result\": {\n    \"content\": [\n      {\n        \"type\": \"text\",\n        \"text\": \"It's always sunny in San Francisco\"\n      }\n    ]\n  }\n}\n```"
+      },
+      "response": []
+    },
+    {
+      "name": "3. Get Weather - Tokyo",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"jsonrpc\": \"2.0\",\n  \"id\": 3,\n  \"method\": \"tools/call\",\n  \"params\": {\n    \"name\": \"get_weather\",\n    \"arguments\": {\n      \"location\": \"Tokyo\"\n    }\n  }\n}"
+        },
+        "url": {
+          "raw": "http://localhost:8000/mcp",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8000",
+          "path": ["mcp"]
+        },
+        "description": "Calls the `get_weather` tool with location \"Tokyo\"."
+      },
+      "response": []
+    },
+    {
+      "name": "4. Get Weather - London",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"jsonrpc\": \"2.0\",\n  \"id\": 4,\n  \"method\": \"tools/call\",\n  \"params\": {\n    \"name\": \"get_weather\",\n    \"arguments\": {\n      \"location\": \"London\"\n    }\n  }\n}"
+        },
+        "url": {
+          "raw": "http://localhost:8000/mcp",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8000",
+          "path": ["mcp"]
+        },
+        "description": "Calls the `get_weather` tool with location \"London\"."
+      },
+      "response": []
+    },
+    {
+      "name": "5. Error - Unknown Tool",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"jsonrpc\": \"2.0\",\n  \"id\": 5,\n  \"method\": \"tools/call\",\n  \"params\": {\n    \"name\": \"unknown_tool\",\n    \"arguments\": {}\n  }\n}"
+        },
+        "url": {
+          "raw": "http://localhost:8000/mcp",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8000",
+          "path": ["mcp"]
+        },
+        "description": "Tests error handling by calling a tool that doesn't exist.\n\n**Expected Response:**\n```json\n{\n  \"jsonrpc\": \"2.0\",\n  \"id\": 5,\n  \"error\": {\n    \"code\": -32603,\n    \"message\": \"Unknown tool: unknown_tool\"\n  }\n}\n```"
+      },
+      "response": []
+    },
+    {
+      "name": "6. Error - Missing Required Parameter",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"jsonrpc\": \"2.0\",\n  \"id\": 6,\n  \"method\": \"tools/call\",\n  \"params\": {\n    \"name\": \"get_weather\",\n    \"arguments\": {}\n  }\n}"
+        },
+        "url": {
+          "raw": "http://localhost:8000/mcp",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8000",
+          "path": ["mcp"]
+        },
+        "description": "Tests parameter validation by omitting the required `location` parameter."
+      },
+      "response": []
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8000",
+      "type": "string"
+    }
+  ]
+}
+
+
+
