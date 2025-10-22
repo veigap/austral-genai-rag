@@ -1,67 +1,66 @@
-# AI Agents Tutorial
+# AI Agents Tutorial with RAG & MCP
 
-A comprehensive tutorial on building AI agents with LangChain, Model Context Protocol (MCP), and Retrieval-Augmented Generation (RAG).
+A comprehensive, hands-on tutorial for building production-ready AI agents using **LangChain**, **Model Context Protocol (MCP)**, and **Retrieval-Augmented Generation (RAG)** with both **Elasticsearch** and **ChromaDB**.
 
-## 📚 What's Inside
+## 🎯 What You'll Learn
 
-This repository contains examples and tutorials for:
+This repository demonstrates:
 
-1. **LangChain Agents** - Basic agent setup with tools
-2. **MCP Servers** - Model Context Protocol implementations (stdio-based)
-3. **RAG Examples** - Retrieval-Augmented Generation with Elasticsearch
-4. **Production Patterns** - Best practices for AI applications
+1. **RAG Patterns** - From simple to production-grade retrieval
+2. **Vector vs Full-Text Search** - ChromaDB vs Elasticsearch comparison
+3. **MCP Integration** - Official protocol for AI tool standardization
+4. **Agent Architectures** - When to use agents vs direct retrieval
+5. **Production Patterns** - Microservices, debugging, and best practices
 
-## 🚀 Quick Start
+## ⚡ Quick Start
 
-### Prerequisites
+### 1. Install Dependencies
 
 ```bash
-# Install dependencies
 yarn install
 ```
 
-### ⚙️ Environment Setup (Required!)
+### 2. Set Up Environment (Required!)
 
-Create a `.env` file in the project root:
+Create a `.env` file:
 
 ```bash
-# Create the file
-touch .env
+# Google API Key (get from https://makersuite.google.com/app/apikey)
+GOOGLE_API_KEY=your-actual-api-key-here
 
-# Add your Google API key (get from https://makersuite.google.com/app/apikey)
-echo "GOOGLE_API_KEY=your-actual-api-key-here" >> .env
-echo "ELASTICSEARCH_URL=http://localhost:9200" >> .env
+# Elasticsearch Configuration
+ELASTICSEARCH_URL=http://localhost:9200
+
+# ChromaDB Configuration (optional)
+CHROMA_URL=http://localhost:8000
+CHROMA_EMBEDDING_FUNCTION=default
 ```
 
-**📖 See [SETUP.md](SETUP.md) for detailed instructions**
+📖 **See [SETUP.md](SETUP.md) for detailed setup instructions**
 
-### Try the Examples
+### 3. Choose Your Path
 
-**1. Simple RAG (No agents, no MCP):**
+**Path A: Elasticsearch (Full-Text Search)**
 ```bash
-# Start Elasticsearch + Kibana
+# Terminal 1: Start Elasticsearch + Kibana
 yarn elasticsearch:start
 
-# In another terminal
-yarn rag:case1
+# Terminal 2: Run examples
+yarn rag:case1    # Simple RAG
+yarn rag:case2    # Agent-based
+yarn rag:case3    # Production MCP
 ```
 
-**2. Agent-based RAG:**
+**Path B: ChromaDB (Vector Search)**
 ```bash
-# Elasticsearch should already be running
-yarn rag:case2
-```
+# Terminal 1: Start ChromaDB
+yarn chroma:start
 
-**3. Production RAG with MCP:**
-```bash
-# Start Elasticsearch
-yarn elasticsearch:start
+# Terminal 2: Run example
+yarn rag:case4    # Agent + MCP + Vectors
 
-# In another terminal, start MCP server
-yarn mcp:elasticsearch
-
-# In a third terminal, run agent
-yarn rag:case3
+# Explore data
+yarn chroma:console
 ```
 
 ## 📂 Project Structure
@@ -72,173 +71,390 @@ yarn rag:case3
 │   ├── mcp/                        # MCP server examples (stdio)
 │   │   ├── math-io.ts              # Math operations
 │   │   └── weather-http.ts         # Weather service  
-│   └── rag/                        # RAG with Elasticsearch
-│       ├── elasticsearch-mcp-server.ts  # MCP server for ES (stdio)
-│       ├── setup-data.ts           # Sample data setup
-│       └── README.md               # 📖 RAG DOCUMENTATION
+│   ├── rag/                        # RAG with Elasticsearch
+│   │   ├── elasticsearch-mcp-server.ts      # MCP server (stdio)
+│   │   ├── elasticsearch-mcp-http-server.ts # MCP server (HTTP)
+│   │   ├── setup-data.ts           # Data initialization
+│   │   └── README.md               # 📖 Elasticsearch RAG guide
+│   └── chroma/                     # RAG with ChromaDB
+│       ├── setup-data.ts           # Data initialization
+│       ├── query-console.ts        # Interactive query tool
+│       └── README.md               # 📖 ChromaDB RAG guide
 │
 ├── test/
 │   ├── mcp/                        # MCP client tests
 │   │   ├── test-mcp-stdio-client.ts
 │   │   └── test-mcp-http-client.ts
-│   └── rag/                        # RAG examples
-│       ├── case1:direct-rag-example.ts     # ⭐ Start here
-│       ├── case2: agent-rag-example.ts     # Agent with tools
-│       ├── case3: agent-mcp-example.ts     # ⭐⭐ Production
-│       └── README.md               # RAG examples guide
+│   └── rag/                        # RAG examples (⭐ START HERE)
+│       ├── case1:direct-rag-example.ts        # Direct RAG
+│       ├── case2: agent-rag-example.ts        # Agent + ES
+│       ├── case3: agent-mcp-example.ts        # Agent + MCP + ES
+│       ├── case4: agent-mcp-chroma.ts         # Agent + MCP + Chroma
+│       └── README.md               # Examples comparison
+│
+├── data/
+│   └── products.json               # Shared product catalog
 │
 ├── scripts/
-│   └── es-mcp/                     # Docker setup
-│       ├── docker-compose.yml      # ES + Kibana + data init
-│       └── Dockerfile              # Data initialization container
+│   ├── es-mcp/                     # Elasticsearch Docker setup
+│   │   ├── docker-compose.yml      # ES + Kibana + init
+│   │   └── Dockerfile
+│   └── chroma-mcp/                 # ChromaDB Docker setup
+│       ├── docker-compose.yml      # Chroma + init
+│       └── Dockerfile
 │
 ├── resources/
-│   └── MCP-Weather-Server.postman_collection.json  # API tests
+│   ├── MCP-Weather-Server.postman_collection.json
+│   └── README.md
 │
-├── .env.example                    # Environment variables template
-├── .gitignore                      # Excludes .env from git
-└── SETUP.md                        # 📖 Setup instructions
+├── .env                            # ⚠️ CREATE THIS (see SETUP.md)
+├── .gitignore                      # Excludes .env
+├── SETUP.md                        # 📖 Setup guide
+└── README.md                       # 👈 You are here
 ```
 
-## 📖 Documentation
+## 🎯 RAG Examples - Progressive Learning
 
-### Main Guides
+### Case 1: Direct RAG ⭐ (Start Here!)
 
-- **[SETUP.md](SETUP.md)** - Environment setup and API keys
-- **[RAG Documentation](src/rag/README.md)** - Comprehensive guide to all RAG examples
-- **[RAG Examples](test/rag/README.md)** - Quick comparison and use cases
-- **[Postman Resources](resources/README.md)** - API testing examples
-
-### Key Concepts
-
-**MCP (Model Context Protocol):**
-- Standard protocol for AI tool integration
-- JSON-RPC 2.0 based
-- Supports stdio and HTTP transports
-- Perfect for microservices
-
-**RAG (Retrieval-Augmented Generation):**
-- Search your data (Elasticsearch)
-- Pass context to AI model
-- Get accurate, grounded responses
-- Reduces hallucinations
-
-**Agents:**
-- AI that decides when to use tools
-- Multi-step reasoning
-- Natural conversation
-- Framework: LangChain
-
-## 🎯 Examples Overview
-
-### Case 1: Direct RAG ⭐ (Simplest)
-
-**Best for:** Learning RAG basics
+**Best for:** Understanding RAG fundamentals
 
 ```bash
 yarn elasticsearch:start
 yarn rag:case1
 ```
 
-**What it does:** Search → AI → Answer (no agents, no complexity)
+**Architecture:**
+```
+User Query → Search ES → Pass results to AI → Generate Answer
+```
 
 **Features:**
-- 🔍 Debug logging shows ES queries and results
-- 📊 Relevance scores displayed
-- 🎯 Simple, linear flow
+- ✅ No agents, no complexity
+- ✅ Debug logging shows ES queries
+- ✅ See relevance scores
+- ✅ Linear, predictable flow
 
-### Case 2: Agent with Tools
+**When to use:** Simple Q&A, document lookup, learning RAG
 
-**Best for:** Smart assistants, chatbots
+---
+
+### Case 2: Agent + Direct Tools
+
+**Best for:** Smart assistants that need reasoning
 
 ```bash
 yarn elasticsearch:start
 yarn rag:case2
 ```
 
-**What it does:** Agent decides when/how to search, then generates response
+**Architecture:**
+```
+User Query → Agent decides → Search ES → Agent reasons → Answer
+```
 
 **Features:**
-- 🤖 Agent intelligence
-- 🔧 Custom tools
-- 🔍 Debug logging for all searches
+- ✅ Agent intelligence (when/how to search)
+- ✅ Custom LangChain tools
+- ✅ Multi-step reasoning
+- ✅ Debug logging
 
-### Case 3: Agent + MCP ⭐⭐ (Production)
+**When to use:** Chatbots, assistants, complex queries
+
+---
+
+### Case 3: Agent + MCP + Elasticsearch ⭐⭐ (Production)
 
 **Best for:** Production apps, microservices, scalability
 
 ```bash
-yarn elasticsearch:start    # Terminal 1
-yarn mcp:elasticsearch      # Terminal 2
-yarn rag:case3             # Terminal 3
+yarn elasticsearch:start
+yarn mcp:elasticsearch-http
+yarn rag:case3
 ```
 
-**What it does:** Agent + MCP protocol + Elasticsearch = Scalable architecture
+**Architecture:**
+```
+User Query → Agent → MCP Adapter → HTTP MCP Server → ES → Response
+```
 
 **Features:**
-- 🏗️ Microservices architecture
-- 📡 stdio-based MCP communication
-- 🔄 Decoupled components
-- 🔍 Debug logging in MCP server
+- ✅ Microservices architecture
+- ✅ HTTP-based MCP (standard protocol)
+- ✅ Process isolation
+- ✅ Tool auto-discovery
+- ✅ Decoupled components
+
+**When to use:** Production systems, multiple services, team projects
+
+---
+
+### Case 4: Agent + MCP + ChromaDB (Vector Search)
+
+**Best for:** Semantic search, AI-first applications
+
+```bash
+yarn chroma:start
+yarn rag:case4
+```
+
+**Architecture:**
+```
+User Query → Agent → MCP Adapter → chroma-mcp (Python) → ChromaDB → Response
+```
+
+**Features:**
+- ✅ Official chroma-mcp Python server (via uvx)
+- ✅ Semantic similarity search
+- ✅ Built-in embeddings (MiniLM-L6-v2)
+- ✅ Configurable embedding models
+- ✅ stdio-based MCP
+
+**When to use:** Semantic search, embeddings, similarity matching
+
+---
+
+## 🔍 Elasticsearch vs ChromaDB
+
+| Feature | Elasticsearch (Cases 1-3) | ChromaDB (Case 4) |
+|---------|--------------------------|-------------------|
+| **Search Type** | Full-text + filters | Vector similarity |
+| **Embeddings** | Not built-in | Native support |
+| **Best For** | Traditional search | AI/semantic search |
+| **Query Language** | JSON DSL | Semantic queries |
+| **Setup** | Docker + Kibana UI | Docker only |
+| **Console** | Kibana Dev Tools | Custom CLI tool |
+| **Data Model** | Documents + indexes | Collections + vectors |
+| **Use Case** | Search engines, logs | AI apps, recommendations |
 
 ## 🛠️ All Commands
 
 ### Elasticsearch Stack
 ```bash
 yarn elasticsearch:start     # Start ES + Kibana + auto-load data
-yarn elasticsearch:stop      # Stop all containers
-yarn elasticsearch:logs      # View all logs
+yarn elasticsearch:stop      # Stop all services
 ```
 
 **What you get:**
-- ✅ **Elasticsearch** at http://localhost:9200
-- ✅ **Kibana UI** at http://localhost:5601 (auto-configured!)
-- ✅ **Sample data** auto-loaded (5 products + 4 customers)
+- ✅ Elasticsearch at http://localhost:9200
+- ✅ Kibana UI at http://localhost:5601
+- ✅ Sample data auto-loaded (5 products)
+
+### ChromaDB Stack
+```bash
+yarn chroma:start           # Start ChromaDB + auto-load data
+yarn chroma:stop            # Stop service
+yarn chroma:console         # Interactive query console ⭐
+```
+
+**What you get:**
+- ✅ ChromaDB at http://localhost:8000
+- ✅ Sample data auto-loaded (same 5 products)
+- ✅ Interactive console for queries
 
 ### RAG Examples
 ```bash
-yarn rag:case1              # Direct RAG (no agents, no MCP)
-yarn rag:case2              # Agent with tools (no MCP)
-yarn rag:case3              # Agent + MCP (production)
+yarn rag:case1              # Direct RAG (Elasticsearch)
+yarn rag:case2              # Agent + ES tools
+yarn rag:case3              # Agent + MCP + ES (production)
+yarn rag:case4              # Agent + MCP + ChromaDB (vectors)
 ```
 
-### MCP Servers (stdio)
+### MCP Servers
 ```bash
-yarn mcp:math               # Math operations server
-yarn mcp:weather            # Weather service server
-yarn mcp:elasticsearch      # Elasticsearch MCP server
+yarn mcp:math               # Math operations (stdio)
+yarn mcp:weather            # Weather service (stdio)
+yarn mcp:elasticsearch      # Elasticsearch MCP (stdio)
+yarn mcp:elasticsearch-http # Elasticsearch MCP (HTTP) ⭐
 ```
 
 ### Data Management
 ```bash
-yarn data:setup             # Manually run data initialization
+yarn data:setup             # ES data initialization
+yarn chroma:data:setup      # Chroma data initialization
 ```
 
 ### Tests
 ```bash
-yarn test-mcp-io            # Test stdio MCP server
-yarn test-mcp-http          # Test HTTP MCP server (legacy)
+yarn test-mcp-io            # Test stdio MCP
+yarn test-mcp-http          # Test HTTP MCP
 ```
 
 ## 🖥️ Web Interfaces
 
-When running with Docker:
-
-- **Elasticsearch:** http://localhost:9200
+### Elasticsearch Stack
+- **Elasticsearch API:** http://localhost:9200
 - **Kibana UI:** http://localhost:5601
 - **Kibana Dev Tools:** http://localhost:5601/app/dev_tools#/console
 
+### ChromaDB Stack
+- **ChromaDB API:** http://localhost:8000
+- **Interactive Console:** `yarn chroma:console`
+
+## 🎓 Learning Path
+
+### Beginner: Start with Simple RAG
+
+```bash
+# 1. Create .env with your Google API key
+cat > .env << 'EOF'
+GOOGLE_API_KEY=your-key-here
+ELASTICSEARCH_URL=http://localhost:9200
+EOF
+
+# 2. Start Elasticsearch
+yarn elasticsearch:start
+
+# 3. Run the simplest example
+yarn rag:case1
+```
+
+**What to observe:**
+- 📤 How queries are structured
+- 📥 What data comes back
+- 🎯 Relevance scores
+- 🤖 How AI uses the context
+
+### Intermediate: Add Agent Intelligence
+
+```bash
+# Same Elasticsearch is running
+yarn rag:case2
+```
+
+**What to observe:**
+- 🤖 Agent decides when to search
+- 🔧 Tool calling in action
+- 💭 Agent reasoning process
+
+### Advanced: Production with MCP
+
+```bash
+# Terminal 1: Elasticsearch (already running)
+
+# Terminal 2: Start MCP HTTP server
+yarn mcp:elasticsearch-http
+
+# Terminal 3: Run agent
+yarn rag:case3
+```
+
+**What to observe:**
+- 📡 Process isolation
+- 🔌 HTTP communication
+- 🛠️ Tool auto-discovery
+- 🏗️ Microservices architecture
+
+### Expert: Vector Search with ChromaDB
+
+```bash
+# Terminal 1: Start ChromaDB
+yarn chroma:start
+
+# Terminal 2: Explore data
+yarn chroma:console
+# Try: list, peek products, query products laptop
+
+# Terminal 3: Run agent
+yarn rag:case4
+```
+
+**What to observe:**
+- 🧮 Semantic similarity
+- 📐 Embedding vectors
+- 🎯 Distance scores
+- 🐍 Python MCP server via uvx
+
+## 🌟 Key Features
+
+### 1. Shared Data Source
+
+All examples use the same product catalog from `data/products.json`:
+- Consistent across Elasticsearch and ChromaDB
+- Easy to modify and experiment
+- Real-world product data structure
+
+### 2. Debug Logging
+
+Every RAG example shows:
+```
+📤 Elasticsearch Query:
+{
+  "index": "products",
+  "query": { "multi_match": { "query": "laptop" } }
+}
+
+📥 Results:
+   Total: 3, Max Score: 2.45
+   1. [2.45] Dell XPS 15 ($1299)
+   2. [1.87] MacBook Pro ($1999)
+```
+
+### 3. Auto-Discovery with MCP Adapters
+
+```typescript
+import { MultiServerMCPClient } from "@langchain/mcp-adapters";
+
+const mcpClient = new MultiServerMCPClient({
+    elasticsearch: {
+        type: "http",
+        url: "http://localhost:8001/mcp"
+    }
+});
+
+// Magic! No manual tool definitions needed
+const tools = await mcpClient.getTools();
+```
+
+### 4. Interactive Query Consoles
+
+**Elasticsearch (Kibana):**
+- Full UI at http://localhost:5601
+- Dev Tools for query testing
+- Visual index management
+
+**ChromaDB (Custom CLI):**
+```bash
+$ yarn chroma:console
+
+chroma> list
+📚 Available Collections:
+   📦 products (5 documents)
+
+chroma> query products laptop 2
+🔍 Searching "products" for: "laptop"
+   1. [0.3421] MacBook Pro 16"
+   2. [0.4122] Dell XPS 13
+```
+
+### 5. Embedding Configuration (Educational)
+
+ChromaDB example shows how to configure embeddings:
+
+```bash
+# In .env
+CHROMA_EMBEDDING_FUNCTION=default  # or openai, cohere, jina
+
+# Default: MiniLM-L6-v2 (free, local, 384 dims)
+# OpenAI: text-embedding-ada-002 (paid, 1536 dims)
+```
+
 ## 🔧 Technologies
 
-- **TypeScript** - Type-safe JavaScript
-- **LangChain** - AI agent framework
-- **@langchain/mcp-adapters** - MCP integration for LangChain
-- **Google Gemini** - AI model (via API key)
-- **Elasticsearch** - Search engine
-- **Docker** - Containerization
-- **dotenv** - Environment variable management
-- **Zod** - Schema validation
-- **tsx** - TypeScript execution
+| Category | Technology | Purpose |
+|----------|-----------|---------|
+| **Language** | TypeScript | Type-safe development |
+| **AI Framework** | LangChain | Agent orchestration |
+| **AI Model** | Google Gemini | Text generation |
+| **Search (Text)** | Elasticsearch 8.11 | Full-text search |
+| **Search (Vector)** | ChromaDB 0.4.24 | Semantic search |
+| **Protocol** | MCP (Model Context Protocol) | Tool standardization |
+| **MCP Integration** | @langchain/mcp-adapters | Auto tool discovery |
+| **MCP SDK** | @modelcontextprotocol/sdk | Server implementation |
+| **Runtime** | tsx | TypeScript execution |
+| **Environment** | dotenv | Config management |
+| **Validation** | Zod | Schema validation |
+| **Containers** | Docker Compose | Service orchestration |
 
 ## 📦 Key Dependencies
 
@@ -249,186 +465,138 @@ When running with Docker:
   "@langchain/google-genai": "^1.0.0",
   "@langchain/mcp-adapters": "^1.0.0",
   "@elastic/elasticsearch": "^8.11.0",
+  "chromadb": "^3.0.17",
   "@modelcontextprotocol/sdk": "^1.20.1",
   "dotenv": "^17.2.3",
   "tsx": "^4.19.2"
 }
 ```
 
-## 🎓 Learning Path
+## 🐛 Common Issues & Solutions
 
-1. **Setup environment:**
-   ```bash
-   # Create .env with your Google API key
-   cat > .env << EOF
-   GOOGLE_API_KEY=your-key-here
-   ELASTICSEARCH_URL=http://localhost:9200
-   EOF
-   ```
-
-2. **Start Elasticsearch:**
-   ```bash
-   yarn elasticsearch:start
-   ```
-
-3. **Learn RAG (simplest):**
-   ```bash
-   yarn rag:case1  # Watch the debug output!
-   ```
-
-4. **Try agent intelligence:**
-   ```bash
-   yarn rag:case2  # See how the agent decides
-   ```
-
-5. **Go production with MCP:**
-   ```bash
-   yarn mcp:elasticsearch  # Terminal 2
-   yarn rag:case3         # Terminal 3
-   ```
-
-6. **Explore Kibana:**
-   - Go to: http://localhost:5601/app/dev_tools#/console
-   - Try: `GET /products/_search`
-
-## 🌟 Highlights
-
-### Debug Logging
-
-All RAG examples now show:
-- 📤 **Elasticsearch queries** sent
-- 📥 **Raw results** returned
-- 🎯 **Relevance scores** for each hit
-- 📊 **Total hits** and metadata
-
-Example output:
-```
-📤 Elasticsearch Query:
-{
-  "index": "products",
-  "query": {
-    "multi_match": {
-      "query": "laptop",
-      "fields": ["name", "description", "category"]
-    }
-  },
-  "size": 5
-}
-
-📥 Elasticsearch Results:
-   Total hits: 3
-   Max score: 2.45
-   1. [Score: 2.45] Dell XPS 15 ($1299.99)
-   2. [Score: 1.87] MacBook Pro 14" ($1999.99)
-```
-
-### MCP Adapters (Auto-discovery!)
-
-The project uses `@langchain/mcp-adapters` which **automatically** discovers tools:
-
-```typescript
-import { MultiServerMCPClient } from "@langchain/mcp-adapters";
-
-// Magic! Auto-discovers tools from MCP server
-const mcpClient = new MultiServerMCPClient({
-    elasticsearch: {
-        type: "stdio",
-        command: "yarn",
-        args: ["mcp:elasticsearch"]
-    }
-});
-
-await mcpClient.initializeConnections();
-const tools = await mcpClient.getTools();  // ✨ No manual definitions!
-```
-
-### Production-Ready Architecture (Case 3)
-
-```
-User Question
-    ↓
-Agent (LangChain)
-    ↓
-MCP Adapter (auto-discovers tools)
-    ↓
-stdio → MCP Server (in separate process)
-    ↓
-Elasticsearch (your data)
-    ↓
-Response → Agent → User
-```
-
-## 🐛 Troubleshooting
-
-### Missing API Key Error
+### Missing API Key
 
 ```bash
-# Make sure .env file exists
-ls -la .env
+# Error: "Please set an API key for Google GenerativeAI"
 
-# Should contain:
-# GOOGLE_API_KEY=your-key-here
-# ELASTICSEARCH_URL=http://localhost:9200
+# Solution: Create .env file
+cat > .env << 'EOF'
+GOOGLE_API_KEY=your-actual-key
+ELASTICSEARCH_URL=http://localhost:9200
+CHROMA_URL=http://localhost:8000
+EOF
 ```
 
-See [SETUP.md](SETUP.md) for detailed instructions.
-
-### Elasticsearch won't start
+### Elasticsearch Won't Start
 
 ```bash
-# Check if port 9200 is in use
+# Check if port is in use
 lsof -i :9200
 
-# Remove old containers
+# Clean up and restart
 yarn elasticsearch:stop
-docker system prune -a
-
-# Start fresh
+docker system prune -f
 yarn elasticsearch:start
 ```
 
-### Module not found
+### ChromaDB API Version Error
 
 ```bash
-# Reinstall dependencies
-rm -rf node_modules
-yarn install
+# Error: "The v1 API is deprecated. Please use /v2 apis"
+
+# Solution: The docker-compose.yml pins to compatible version
+yarn chroma:stop
+yarn chroma:start
 ```
 
-### MCP server not responding
+### MCP Server Not Responding
 
 ```bash
-# Test the server directly
-yarn mcp:elasticsearch
+# Test HTTP server directly
+curl http://localhost:8001/health
 
-# You should see:
-# "Elasticsearch MCP server running on stdio"
+# Should return: {"status":"ok","mcp_server":"running"}
 ```
 
-## 📚 Additional Resources
+### uvx Not Found (for Case 4)
 
+```bash
+# Install pipx
+brew install pipx  # macOS
+# or: pip install --user pipx
+
+# Install uvx
+pipx install uvx
+```
+
+## 💡 Best Practices
+
+### 1. Environment Management
+- ✅ Always use `.env` for API keys
+- ✅ Never commit `.env` to git
+- ✅ Use `dotenv/config` at import time
+
+### 2. RAG Pattern Selection
+- **Simple Q&A?** → Case 1 (direct RAG)
+- **Need reasoning?** → Case 2 (agent + tools)
+- **Production system?** → Case 3/4 (agent + MCP)
+- **Semantic search?** → Case 4 (ChromaDB)
+
+### 3. Search Technology Choice
+- **Structured data + filters** → Elasticsearch
+- **Semantic similarity** → ChromaDB
+- **Complex queries** → Elasticsearch
+- **AI-first apps** → ChromaDB
+
+### 4. Debugging
+- ✅ Enable debug logging (already done!)
+- ✅ Use web consoles (Kibana/chroma:console)
+- ✅ Check MCP server health endpoints
+- ✅ View Docker logs when needed
+
+### 5. Production Deployment
+- ✅ Use MCP for service decoupling
+- ✅ Implement proper error handling
+- ✅ Add authentication to MCP servers
+- ✅ Monitor with proper logging
+- ✅ Use environment-specific configs
+
+## 📖 Documentation
+
+### Primary Guides
+- **[SETUP.md](SETUP.md)** - Environment setup and API keys
+- **[Elasticsearch RAG](src/rag/README.md)** - Elasticsearch integration guide
+- **[ChromaDB RAG](src/chroma/README.md)** - ChromaDB integration guide
+- **[RAG Examples](test/rag/README.md)** - All examples comparison
+- **[Postman Resources](resources/README.md)** - API testing
+
+### External Resources
 - [LangChain Documentation](https://js.langchain.com/)
 - [MCP Specification](https://spec.modelcontextprotocol.io/)
-- [Elasticsearch Documentation](https://www.elastic.co/guide/en/elasticsearch/reference/current/index.html)
-- [Kibana Guide](https://www.elastic.co/guide/en/kibana/current/index.html)
-- [Google AI Studio](https://makersuite.google.com/app/apikey) - Get your API key
-
-## 💡 Tips
-
-1. **Always create `.env` first** with your Google API key
-2. **Use Kibana** for Elasticsearch queries (much better than curl!)
-3. **Start simple** with `rag:case1` before moving to MCP
-4. **Check logs** if something fails: `yarn elasticsearch:logs`
-5. **Use MCP adapters** - they auto-discover tools (no manual setup!)
-6. **Debug logging** - All examples show ES queries and results
-7. **Production?** Use `rag:case3` pattern with stdio MCP
+- [Elasticsearch Guide](https://www.elastic.co/guide/en/elasticsearch/reference/current/index.html)
+- [ChromaDB Docs](https://docs.trychroma.com/)
+- [Google AI Studio](https://makersuite.google.com/app/apikey) - Get API key
 
 ## 🔒 Security
 
-- ✅ `.env` is in `.gitignore` - never committed
-- ✅ No API keys hardcoded in code
-- ✅ `dotenv` automatically loads environment variables
-- ✅ See [SETUP.md](SETUP.md) for security best practices
+- ✅ `.env` in `.gitignore` - never committed
+- ✅ No API keys in source code
+- ✅ `dotenv` auto-loads from `.env`
+- ✅ Docker services isolated in networks
+- ⚠️ Add authentication for production MCP servers
+- ⚠️ Use HTTPS in production
+- ⚠️ Rotate API keys regularly
+
+## 🚀 What's Automated
+
+When you run `yarn elasticsearch:start` or `yarn chroma:start`:
+
+1. **Service starts** and waits until healthy
+2. **Data initialization** runs automatically
+3. **Sample data loaded** (products from `data/products.json`)
+4. **Ready to use** - no manual steps!
+
+All initialization is in Docker Compose - zero configuration needed! 🎉
 
 ## 📝 License
 
@@ -436,33 +604,37 @@ MIT
 
 ## 🤝 Contributing
 
-This is a tutorial project. Feel free to use it for learning!
+This is a tutorial project for learning. Feel free to:
+- Fork and experiment
+- Submit improvements
+- Share with others
+- Use in your projects
 
 ---
 
-**Ready to start?** 
+## 🎉 Ready to Start?
 
+### Quickest Path (Elasticsearch):
 ```bash
-# 1. Setup environment
-echo "GOOGLE_API_KEY=your-key-here" > .env
-echo "ELASTICSEARCH_URL=http://localhost:9200" >> .env
-
-# 2. Start Elasticsearch
+echo "GOOGLE_API_KEY=your-key" > .env
 yarn elasticsearch:start
-
-# 3. In another terminal, run examples
-yarn rag:case1
+yarn rag:case1  # Watch the magic happen! ✨
 ```
 
-## ✨ What Gets Initialized Automatically:
+### Alternative Path (ChromaDB):
+```bash
+echo "GOOGLE_API_KEY=your-key" > .env
+yarn chroma:start
+yarn rag:case4  # Explore vector search! 🚀
+```
 
-When you run `yarn elasticsearch:start`, Docker Compose orchestrates:
+### Explore & Learn:
+```bash
+# Elasticsearch console
+open http://localhost:5601/app/dev_tools#/console
 
-1. **Elasticsearch** starts and becomes healthy
-2. **Kibana** starts (auto-configured to Elasticsearch)
-3. **Data Initialization** runs once:
-   - Creates `products` index with 5 sample products
-   - Creates `customers` index with 4 sample customers
-   - Exits after completion
+# ChromaDB console
+yarn chroma:console
+```
 
-**All ready to use** - no manual steps! 🚀
+**Happy learning!** 🎓

@@ -1,6 +1,6 @@
 # RAG (Retrieval-Augmented Generation) Examples
 
-This directory contains three progressive examples of using Elasticsearch with AI for intelligent search and recommendations.
+This directory contains **four progressive examples** demonstrating RAG patterns with both **Elasticsearch** (full-text search) and **ChromaDB** (vector/semantic search).
 
 ## 📋 Overview
 
@@ -8,6 +8,8 @@ All examples require a `.env` file with your Google API key:
 ```bash
 GOOGLE_API_KEY=your-key-here
 ELASTICSEARCH_URL=http://localhost:9200
+CHROMA_URL=http://localhost:8000
+CHROMA_EMBEDDING_FUNCTION=default  # optional
 ```
 
 See [SETUP.md](../../SETUP.md) for details.
@@ -201,21 +203,99 @@ yarn rag:case3
 - ✅ Production-ready pattern
 - ✅ Auto-discovered tools via `@langchain/mcp-adapters`
 
+### `case4: agent-mcp-chroma.ts` - **Agent + MCP + ChromaDB** ⭐ **Vector Search**
+
+Agent that uses the official `chroma-mcp` Python server for semantic similarity search.
+
+**What it does:**
+1. Agent receives customer question
+2. Agent decides to use MCP tool (auto-discovered)
+3. Tool calls chroma-mcp server (Python, stdio, via uvx)
+4. MCP server performs semantic search on ChromaDB
+5. Agent generates recommendation based on similarity
+
+**Architecture:**
+```
+User Question
+     ↓
+Agent (decides to use tool)
+     ↓
+MCP Adapter (auto-discovers tools)
+     ↓
+stdio → chroma-mcp (Python, official)
+     ↓
+ChromaDB (semantic/vector search)
+     ↓
+Search Results (similarity scores)
+     ↓
+Agent (generates answer)
+     ↓
+Helpful Response
+```
+
+**Features:**
+- 🧮 Semantic similarity search (not keyword matching)
+- 🐍 Official `chroma-mcp` Python package (via uvx)
+- 📐 Embeddings: MiniLM-L6-v2 (default, free, local)
+- 🔧 Configurable embedding models (OpenAI, Cohere, Jina, etc.)
+- 🏗️ Microservices architecture
+- ✨ Auto-discovered tools
+
+**Run:**
+```bash
+# 1. Install uvx (one-time)
+brew install pipx  # or: pip install --user pipx
+pipx install uvx
+
+# 2. Start ChromaDB
+yarn chroma:start
+
+# 3. Explore data (optional)
+yarn chroma:console
+
+# 4. Run agent
+yarn rag:case4
+```
+
+**Benefits:**
+- ✅ Semantic search (understands meaning, not just keywords)
+- ✅ Official MCP server from Chroma team
+- ✅ Built-in embeddings (no separate service needed)
+- ✅ Configurable embedding models
+- ✅ Interactive console for data exploration
+- ✅ Perfect for AI-first applications
+
+**Embedding Configuration (Educational):**
+
+The example shows how to configure embeddings:
+
+```bash
+# In .env
+CHROMA_EMBEDDING_FUNCTION=default  # MiniLM-L6-v2 (free, local)
+# Or: openai, cohere, jina, voyageai, roboflow
+
+# If using OpenAI embeddings:
+# OPENAI_API_KEY=sk-your-key
+```
+
 ## 📊 Comparison
 
-| Feature | Case 1 (Direct) | Case 2 (Agent) | Case 3 (MCP) |
-|---------|----------------|---------------|-------------|
-| **Simplicity** | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐ | ⭐⭐⭐ |
-| **Dependencies** | ES + AI | ES + AI + Agent | ES + AI + MCP + Agent |
-| **Setup** | Direct | Direct + Tool | MCP server |
-| **Debug Logging** | ✅ Yes | ✅ Yes | ✅ Yes |
-| **MCP Protocol** | ❌ No | ❌ No | ✅ Yes |
-| **Tool calling** | ❌ No | ✅ Yes | ✅ Yes (auto) |
-| **Agent reasoning** | ❌ No | ✅ Yes | ✅ Yes |
-| **Microservices** | ❌ No | ❌ No | ✅ Yes |
-| **Best for** | Learning RAG | Simple assistant | Production |
-| **Code lines** | ~120 | ~175 | ~120 |
-| **Terminals needed** | 2 | 2 | 3 |
+| Feature | Case 1 | Case 2 | Case 3 | Case 4 |
+|---------|--------|--------|--------|--------|
+| **Name** | Direct RAG | Agent + ES | Agent + MCP + ES | Agent + MCP + Chroma |
+| **Search Type** | Full-text | Full-text | Full-text | **Semantic** |
+| **Simplicity** | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐ | ⭐⭐⭐ | ⭐⭐⭐ |
+| **Dependencies** | ES + AI | ES + AI + Agent | ES + AI + MCP + Agent | Chroma + AI + MCP + Agent |
+| **Setup** | Direct | Direct + Tool | MCP server | MCP server + uvx |
+| **MCP Protocol** | ❌ No | ❌ No | ✅ Yes | ✅ Yes |
+| **Tool calling** | ❌ No | ✅ Yes | ✅ Yes (auto) | ✅ Yes (auto) |
+| **Agent reasoning** | ❌ No | ✅ Yes | ✅ Yes | ✅ Yes |
+| **Microservices** | ❌ No | ❌ No | ✅ Yes | ✅ Yes |
+| **Embeddings** | ❌ No | ❌ No | ❌ No | ✅ Yes (built-in) |
+| **Console** | Kibana | Kibana | Kibana | Custom CLI |
+| **Best for** | Learning RAG | Simple assistant | Production (ES) | Production (Vector) |
+| **Code lines** | ~120 | ~175 | ~110 | ~130 |
+| **Terminals needed** | 2 | 2 | 3 | 2 |
 
 ## 🎯 Which to Use?
 
@@ -237,7 +317,7 @@ yarn rag:case3
 ✅ Want tool calling but no MCP overhead
 ✅ Multi-turn conversations
 
-### Use **Case 3** when: ⭐ **Recommended for Production**
+### Use **Case 3** when: ⭐ **Recommended for Production (Full-Text)**
 ✅ **Building production applications**
 ✅ Want agent intelligence + MCP benefits
 ✅ Microservices architecture
@@ -246,6 +326,33 @@ yarn rag:case3
 ✅ Best practices for enterprise apps
 ✅ Future-proof with MCP standard
 ✅ Auto-discovered tools
+✅ Full-text search + filters needed
+
+### Use **Case 4** when: ⭐ **Recommended for AI-First Apps**
+✅ **Semantic similarity is more important than keyword matching**
+✅ Building AI-first applications (recommendations, similar items)
+✅ Want embeddings without external services
+✅ Need "find similar" functionality
+✅ User queries are natural language
+✅ Configurable embedding models
+✅ Exploring vector databases
+✅ Microservices with semantic search
+
+### Elasticsearch (Cases 1-3) vs ChromaDB (Case 4):
+
+**Choose Elasticsearch when:**
+- Keywords and exact matches matter
+- Need complex filters (price range, categories)
+- Traditional search engine behavior
+- SQL-like queries
+- Full-text search is primary use case
+
+**Choose ChromaDB when:**
+- Meaning matters more than exact words  
+- "Find similar items" is key
+- Natural language queries
+- AI/ML is core to your app
+- Semantic search is primary use case
 
 ## 📖 RAG Pattern Explained
 
@@ -275,15 +382,42 @@ const answer = await aiModel.invoke(prompt);
 
 ## 🚀 Quick Start
 
+### Path A: Elasticsearch (Full-Text Search)
 ```bash
 # 1. Setup environment (one-time)
-echo "GOOGLE_API_KEY=your-key-here" > .env
+cat > .env << 'EOF'
+GOOGLE_API_KEY=your-key-here
+ELASTICSEARCH_URL=http://localhost:9200
+EOF
 
 # 2. Start Elasticsearch
 yarn elasticsearch:start
 
-# 3. Run the simplest example
-yarn rag:case1
+# 3. Run examples
+yarn rag:case1  # Direct RAG
+yarn rag:case2  # Agent + Tools
+yarn rag:case3  # Agent + MCP (need separate terminal for MCP server)
+```
+
+### Path B: ChromaDB (Semantic Search)
+```bash
+# 1. Setup environment (one-time)
+cat > .env << 'EOF'
+GOOGLE_API_KEY=your-key-here
+CHROMA_URL=http://localhost:8000
+EOF
+
+# 2. Install uvx (one-time)
+brew install pipx && pipx install uvx
+
+# 3. Start ChromaDB
+yarn chroma:start
+
+# 4. Explore data
+yarn chroma:console
+
+# 5. Run example
+yarn rag:case4  # Agent + MCP + Semantic Search
 ```
 
 ## 🔍 Debug Output
@@ -323,11 +457,24 @@ Example:
 
 ## 📦 Sample Data
 
-The examples use a product catalog with:
-- **Laptops**: MacBook Pro, Dell XPS, HP Spectre
-- **Accessories**: Apple Magic Mouse, Logitech MX Master
+All examples use the **same product catalog** from `data/products.json`:
+- **Laptops**: MacBook Pro 16", Dell XPS 13, Lenovo ThinkPad X1
+- **Accessories**: Apple Magic Mouse, Logitech MX Master 3
 
-Data is automatically loaded when you start Elasticsearch!
+**Key Points:**
+- ✅ Data is shared across Elasticsearch and ChromaDB
+- ✅ Automatically loaded when you start services
+- ✅ Consistent structure for fair comparison
+- ✅ Easy to modify and experiment with
+
+**Explore the data:**
+```bash
+# Elasticsearch (Kibana UI)
+open http://localhost:5601/app/dev_tools#/console
+
+# ChromaDB (Interactive CLI)
+yarn chroma:console
+```
 
 ## ⚙️ Customization
 
