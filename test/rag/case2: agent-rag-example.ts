@@ -133,34 +133,6 @@ async function main() {
         console.log('═'.repeat(50));
         console.log();
         
-        // Example 2: Looking for accessories
-        console.log('💬 Customer: "What mice do you have?"\n');
-        
-        const response2 = await agent.invoke({
-            messages: [
-                { role: "user", content: "What mice do you have?" }
-            ],
-        });
-        
-        console.log('🤖 Assistant:');
-        console.log('─'.repeat(50));
-        console.log(response2.messages[response2.messages.length - 1].content);
-        console.log('═'.repeat(50));
-        console.log();
-        
-        // Example 3: Budget-conscious with conversation
-        console.log('💬 Customer: "Show me laptops under $1500"\n');
-        
-        const response3 = await agent.invoke({
-            messages: [
-                { role: "user", content: "Show me laptops under $1500" }
-            ],
-        });
-        
-        console.log('🤖 Assistant:');
-        console.log('─'.repeat(50));
-        console.log(response3.messages[response3.messages.length - 1].content);
-        console.log('═'.repeat(50));
         
     } catch (error) {
         console.error('❌ Error:', error instanceof Error ? error.message : error);

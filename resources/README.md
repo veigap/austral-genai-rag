@@ -1,12 +1,51 @@
 # MCP Server Testing Resources
 
-This directory contains resources for testing the MCP (Model Context Protocol) servers.
+This directory contains resources for testing MCP (Model Context Protocol) servers.
+
+## 📝 Note on MCP Servers
+
+**Current Architecture:** All MCP servers in this project now use **stdio** (standard input/output) for communication, which is the recommended approach for MCP.
+
+**This Postman collection** is kept for reference and shows how HTTP-based MCP servers can be tested. The actual production servers use stdio for better process isolation and security.
 
 ## Postman Collection
 
 ### File: `MCP-Weather-Server.postman_collection.json`
 
-A Postman collection for testing the MCP HTTP Weather Server.
+A Postman collection demonstrating HTTP-based MCP server testing (reference implementation).
+
+### Current MCP Servers (stdio-based)
+
+To test the actual MCP servers:
+
+```bash
+# Math operations
+yarn mcp:math
+
+# Weather service (stdio, not HTTP)
+yarn mcp:weather
+
+# Elasticsearch
+yarn mcp:elasticsearch
+```
+
+These servers communicate via **stdio** and require clients that spawn them as child processes.
+
+### Testing stdio MCP Servers
+
+Use the TypeScript test clients:
+
+```bash
+# Test stdio math server
+yarn test-mcp-io
+
+# For Elasticsearch MCP, use the RAG examples:
+yarn rag:case3  # Agent with MCP
+```
+
+## HTTP MCP (Legacy/Reference)
+
+If you want to run an HTTP version for testing with Postman, you would need to modify the server to use HTTP transport (see git history for reference implementation).
 
 ### How to Import into Postman
 
@@ -21,19 +60,9 @@ A Postman collection for testing the MCP HTTP Weather Server.
 1. Open Postman
 2. Drag and drop the `MCP-Weather-Server.postman_collection.json` file into the Postman window
 
-### Setup
-
-Before running the requests, start the MCP HTTP server:
-
-```bash
-yarn mcp-http
-```
-
-The server will start on `http://localhost:8000`
-
 ### Available Requests
 
-The collection includes 6 example requests:
+The collection includes 6 example requests demonstrating JSON-RPC 2.0 with MCP:
 
 #### 1. **List Tools**
 - Lists all available tools from the server
@@ -111,9 +140,9 @@ All requests follow the **JSON-RPC 2.0** standard:
 }
 ```
 
-## Using cURL
+## Using cURL (for HTTP MCP servers)
 
-If you don't have Postman, you can use `curl` from the command line:
+If testing an HTTP-based MCP server:
 
 ### List Tools
 ```bash
@@ -143,41 +172,88 @@ curl -X POST http://localhost:8000/mcp \
   }'
 ```
 
-## Using the TypeScript Test Client
+## stdio MCP Communication (Recommended)
 
-Run the automated test client:
+The standard way to communicate with MCP servers is via stdio:
 
-```bash
-# Make sure the server is running first
-yarn mcp-http
+```typescript
+import { spawn } from 'child_process';
 
-# In another terminal, run the test client
-yarn test-mcp-http
+// Spawn the MCP server
+const mcpProcess = spawn('yarn', ['mcp:math']);
+
+// Send JSON-RPC request to stdin
+mcpProcess.stdin.write(JSON.stringify({
+    jsonrpc: "2.0",
+    id: 1,
+    method: "tools/list"
+}) + '\n');
+
+// Read JSON-RPC response from stdout
+mcpProcess.stdout.on('data', (data) => {
+    const response = JSON.parse(data.toString());
+    console.log(response);
+});
 ```
 
-## Variables
+Or use the LangChain MCP adapters:
 
-The collection includes a variable:
-- `baseUrl`: `http://localhost:8000` (can be modified in Postman's environment settings)
+```typescript
+import { MultiServerMCPClient } from "@langchain/mcp-adapters";
 
-## Tips
+const mcpClient = new MultiServerMCPClient({
+    math: {
+        type: "stdio",
+        command: "yarn",
+        args: ["mcp:math"]
+    }
+});
 
-1. **Run in sequence**: Run the "List Tools" request first to see what tools are available
-2. **Watch the ID**: Each request has a unique `id` that matches in the response
-3. **Check server logs**: The server console will show incoming requests
-4. **Modify parameters**: Try different locations or create your own requests
-5. **Export responses**: Use Postman's "Save Response" to keep examples
+await mcpClient.initializeConnections();
+const tools = await mcpClient.getTools(); // Auto-discovered!
+```
+
+## Testing Resources
+
+### stdio Test Clients
+
+```bash
+# Test stdio MCP server (math operations)
+yarn test-mcp-io
+
+# Test Elasticsearch MCP with agents
+yarn rag:case3
+```
+
+### Related Files
+
+- **stdio servers**: 
+  - `../src/mcp/math-io.ts`
+  - `../src/mcp/weather-http.ts` (now uses stdio despite the name)
+  - `../src/rag/elasticsearch-mcp-server.ts`
+- **Test clients**:
+  - `../test/mcp/test-mcp-stdio-client.ts`
+  - `../test/rag/case3: agent-mcp-example.ts`
 
 ## MCP Protocol Documentation
 
 - **MCP Specification**: https://spec.modelcontextprotocol.io/
 - **JSON-RPC 2.0**: https://www.jsonrpc.org/specification
+- **LangChain MCP Adapters**: https://js.langchain.com/docs/integrations/tools/mcp
 
-## Related Files
+## Why stdio over HTTP?
 
-- Server implementation: `../src/mcp-http.ts`
-- Test client: `../test/test-mcp-http-client.ts`
-- I/O version: `../src/mcp-io.ts`
+**stdio benefits:**
+- ✅ Better security (no exposed ports)
+- ✅ Process isolation
+- ✅ Standard MCP approach
+- ✅ Simpler deployment
+- ✅ Works with `@langchain/mcp-adapters`
 
+**HTTP use cases:**
+- Multiple remote clients
+- Cross-network communication
+- API gateway patterns
+- Load balancing needs
 
-
+For most applications, **stdio is recommended** and is the pattern used throughout this tutorial.
