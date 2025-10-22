@@ -16,9 +16,19 @@ async function setupChromaData() {
         console.log('🔌 Connecting to ChromaDB...');
         
         const chromaUrl = process.env.CHROMA_URL || 'http://localhost:8000';
-        const client = new ChromaClient({ path: chromaUrl });
+        console.log(`   Trying to connect to: ${chromaUrl}`);
+        
+        // Parse URL to get host and port
+        const url = new URL(chromaUrl);
+        console.log(`   Host: ${url.hostname}, Port: ${url.port || 8000}`);
+        
+        const client = new ChromaClient({ 
+            host: url.hostname, 
+            port: parseInt(url.port) || 8000 
+        });
         
         // Test connection
+        console.log('   Testing connection...');
         const version = await client.version();
         console.log(`✅ Connected to ChromaDB version ${version}`);
         console.log(`📍 ChromaDB URL: ${chromaUrl}`);

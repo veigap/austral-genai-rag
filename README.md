@@ -204,7 +204,7 @@ User Query → Agent → MCP Adapter → chroma-mcp (Python) → ChromaDB → Re
 ```
 
 **Features:**
-- ✅ Official chroma-mcp Python server (via uvx)
+- ✅ Official chroma-mcp Python server (via pip)
 - ✅ Semantic similarity search
 - ✅ Built-in embeddings (MiniLM-L6-v2)
 - ✅ Configurable embedding models
@@ -363,7 +363,7 @@ yarn rag:case4
 - 🧮 Semantic similarity
 - 📐 Embedding vectors
 - 🎯 Distance scores
-- 🐍 Python MCP server via uvx
+- 🐍 Python MCP server via pip (chroma-mcp)
 
 ## 🌟 Key Features
 
@@ -518,15 +518,14 @@ curl http://localhost:8001/health
 # Should return: {"status":"ok","mcp_server":"running"}
 ```
 
-### uvx Not Found (for Case 4)
+### chroma-mcp Not Found (for Case 4)
 
 ```bash
-# Install pipx
-brew install pipx  # macOS
-# or: pip install --user pipx
+# Install chroma-mcp Python package
+pip3 install chroma-mcp
 
-# Install uvx
-pipx install uvx
+# Verify installation
+python3 -m chroma_mcp --help
 ```
 
 ## 💡 Best Practices

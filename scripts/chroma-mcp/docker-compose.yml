@@ -14,7 +14,7 @@ services:
       - CHROMA_SERVER_AUTHN_CREDENTIALS_FILE=
       - CHROMA_SERVER_AUTHN_PROVIDER=
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8000/api/v1/heartbeat"]
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/api/v1/heartbeat')"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -36,6 +36,26 @@ services:
     networks:
       - chroma
     restart: "no"
+
+  # ChromaDB MCP HTTP Server
+  chroma-mcp-server:
+    build:
+      context: ../..
+      dockerfile: scripts/chroma-mcp/Dockerfile
+    container_name: chroma-mcp-server
+    depends_on:
+      chroma:
+        condition: service_healthy
+      data-init:
+        condition: service_completed_successfully
+    ports:
+      - "8002:8002"
+    environment:
+      - CHROMA_URL=http://chroma:8000
+      - PORT=8002
+    command: ["yarn", "chroma:mcp:http"]
+    networks:
+      - chroma
 
 volumes:
   chroma_data:

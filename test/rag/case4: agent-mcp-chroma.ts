@@ -4,9 +4,8 @@ import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
 import { MultiServerMCPClient } from "@langchain/mcp-adapters";
 
 // Prerequisites:
-// 1. Start ChromaDB: yarn chroma:start
-// 2. Install chroma-mcp: pip install chroma-mcp (or use uvx)
-// 3. MCP server auto-starts via stdio (no manual step needed)
+// 1. Start ChromaDB + MCP server: yarn chroma:start
+// 2. Everything runs in Docker - no local installs needed! ✅
 
 // AI model
 const model = new ChatGoogleGenerativeAI({
@@ -26,6 +25,8 @@ When helping customers:
 
 Use the Chroma search tools to find products in our catalog.`;
 
+const MCP_SERVER_URL = 'http://localhost:8002/mcp';
+
 async function main() {
     let mcpClient: MultiServerMCPClient | null = null;
     
@@ -34,30 +35,14 @@ async function main() {
         console.log('   Agent with MCP (Chroma) - Product Assistant');
         console.log('═══════════════════════════════════════════════════\n');
         
-        // Create MCP client that auto-spawns the chroma-mcp Python server via stdio
-        console.log('🔌 Starting Chroma MCP server via stdio...');
-        
-        // For educational purposes: Show embedding configuration
-        const embeddingFunction = process.env.CHROMA_EMBEDDING_FUNCTION || 'default';
-        console.log(`📐 Embedding function: ${embeddingFunction}`);
-        console.log('   - default: MiniLM-L6-v2 (no API key needed)');
-        console.log('   - openai: text-embedding-ada-002 (requires OPENAI_API_KEY)');
-        console.log('   - cohere, jina, voyageai, roboflow (require respective API keys)');
-        console.log();
+        // Create MCP client that connects to HTTP server
+        console.log(`🔌 Connecting to ChromaDB MCP HTTP server at ${MCP_SERVER_URL}...`);
+        console.log('📐 Semantic search using MiniLM-L6-v2 embeddings (default)\n');
         
         mcpClient = new MultiServerMCPClient({
             chroma: {
-                type: "stdio",
-                command: "uvx",
-                args: ["chroma-mcp"],
-                env: {
-                    ...process.env,
-                    CHROMA_URL: process.env.CHROMA_URL || 'http://localhost:8000',
-                    CHROMA_CLIENT_TYPE: 'http',  // Use HTTP client to connect to our Docker Chroma
-                    CHROMA_EMBEDDING_FUNCTION: embeddingFunction,
-                    // If using OpenAI embeddings, the API key would be passed here:
-                    // OPENAI_API_KEY: process.env.OPENAI_API_KEY
-                }
+                type: "http",
+                url: MCP_SERVER_URL
             }
         });
         
@@ -65,10 +50,10 @@ async function main() {
         await mcpClient.initializeConnections();
         const tools = await mcpClient.getTools();
         
-        console.log(`✅ Connected to Chroma MCP server`);
+        console.log(`✅ Connected to ChromaDB MCP server`);
         console.log(`📦 Available tools: ${tools.length}`);
         tools.forEach((tool, i) => {
-            console.log(`   ${i + 1}. ${tool.name}: ${tool.description}`);
+            console.log(`   ${i + 1}. ${tool.name}`);
         });
         console.log();
         
@@ -114,7 +99,13 @@ async function main() {
         console.log('═══════════════════════════════════════════════════\n');
         
     } catch (error) {
-        console.error('❌ Error:', error);
+        console.error('\n❌ Error:', error);
+        
+        if (error instanceof Error && error.message.includes('Failed to connect')) {
+            console.error('\n💡 Tip: Make sure ChromaDB + MCP server are running:');
+            console.error('   $ yarn chroma:start\n');
+        }
+        
         process.exit(1);
     } finally {
         // Clean up MCP client and exit

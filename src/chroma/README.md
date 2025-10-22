@@ -23,7 +23,7 @@ ChromaDB is a vector database designed for AI applications. Unlike Elasticsearch
 │              Local Machine                       │
 │                      │                           │
 │  chroma-mcp ─────────┘                           │
-│  (Python via uvx)                                │
+│  (Python via pip)                                │
 │       ↑                                          │
 │       │ stdio                                    │
 │       │                                          │
@@ -58,14 +58,14 @@ This will:
 
 ### 2. Install chroma-mcp (Python MCP Server)
 
-The official Chroma MCP server is a Python package. Install it using `uvx`:
+The official Chroma MCP server is a Python package. Install it using `pip`:
 
 ```bash
-# Install uvx if you don't have it
-pip install uvx
+# Install chroma-mcp
+pip3 install chroma-mcp
 
-# The chroma-mcp package will be auto-installed by uvx when needed
-# No manual installation required!
+# Verify installation
+python3 -m chroma_mcp --help
 ```
 
 ### 3. Run the Example
@@ -82,7 +82,7 @@ yarn rag:case4
 Located at: `test/rag/case4: agent-mcp-chroma.ts`
 
 **Flow:**
-1. Client spawns `chroma-mcp` Python server via stdio using `uvx`
+1. Client spawns `chroma-mcp` Python server via stdio using `python3 -m chroma_mcp`
 2. The MCP server connects to ChromaDB via HTTP (`http://localhost:8000`)
 3. LangChain agent auto-discovers Chroma tools via MCP
 4. Agent uses semantic search to find relevant products
@@ -125,8 +125,8 @@ CHROMA_URL=http://localhost:8000
 # Options: default, openai, cohere, jina, voyageai, roboflow
 CHROMA_EMBEDDING_FUNCTION=default
 
-# If using OpenAI embeddings, add:
-# OPENAI_API_KEY=your-openai-api-key
+# IMPORTANT: GOOGLE_API_KEY above is for the AI model (Google Gemini)
+# ChromaDB embeddings are separate! Default embedding doesn't need an API key.
 ```
 
 ## Embedding Configuration (Educational)
@@ -142,14 +142,22 @@ For educational purposes, this example explicitly configures the embedding funct
 - **API Key**: None required
 - **Cost**: Free
 
-### Using OpenAI Embeddings
+### Using OpenAI Embeddings (Optional Advanced Topic)
 
-For higher quality embeddings (but requires API key and costs money):
+**Note:** The AI model (Google Gemini) is separate from embeddings. 
+- **AI Model**: Uses `GOOGLE_API_KEY` for generating text responses
+- **Embeddings**: Only needed if you want OpenAI embeddings instead of default
+
+For OpenAI embeddings (optional, requires separate API key):
 
 1. **Update `.env`**:
 ```bash
+# Keep your existing GOOGLE_API_KEY for the AI model
+GOOGLE_API_KEY=your-google-api-key
+
+# Add ChromaDB OpenAI embedding configuration
 CHROMA_EMBEDDING_FUNCTION=openai
-OPENAI_API_KEY=sk-your-openai-api-key
+CHROMA_OPENAI_API_KEY=sk-your-openai-embedding-key
 ```
 
 2. **Restart ChromaDB**:
@@ -162,6 +170,10 @@ yarn chroma:start
 ```bash
 yarn rag:case4
 ```
+
+**Why two API keys?**
+- **GOOGLE_API_KEY**: For AI text generation (Google Gemini)
+- **CHROMA_OPENAI_API_KEY**: For document embeddings (OpenAI embeddings)
 
 ### Comparison: Default vs OpenAI
 
@@ -176,23 +188,29 @@ yarn rag:case4
 
 ### Other Embedding Options
 
+**Remember:** Keep `GOOGLE_API_KEY` for the AI model. These are additional embeddings API keys:
+
 ```bash
-# Cohere
+# Cohere Embeddings
 CHROMA_EMBEDDING_FUNCTION=cohere
-COHERE_API_KEY=your-cohere-key
+CHROMA_COHERE_API_KEY=your-cohere-key
 
-# Jina
+# Jina Embeddings
 CHROMA_EMBEDDING_FUNCTION=jina
-JINA_API_KEY=your-jina-key
+CHROMA_JINA_API_KEY=your-jina-key
 
-# VoyageAI
+# VoyageAI Embeddings
 CHROMA_EMBEDDING_FUNCTION=voyageai
-VOYAGEAI_API_KEY=your-voyage-key
+CHROMA_VOYAGEAI_API_KEY=your-voyage-key
 
-# Roboflow
+# Roboflow Embeddings
 CHROMA_EMBEDDING_FUNCTION=roboflow
-ROBOFLOW_API_KEY=your-roboflow-key
+CHROMA_ROBOFLOW_API_KEY=your-roboflow-key
 ```
+
+**Key Concept:**
+- AI Model (Google Gemini) = GOOGLE_API_KEY (always needed)
+- Embeddings (ChromaDB) = Optional, only if not using default
 
 ## Data Source
 
@@ -275,18 +293,21 @@ docker logs chroma-mcp
 yarn chroma:stop && yarn chroma:start
 ```
 
-### uvx/Python Issues
+### chroma-mcp/Python Issues
 
-If `uvx` is not found:
+If `chroma-mcp` is not found:
 
 ```bash
-# Install pipx (package manager for Python apps)
-brew install pipx  # macOS
-# or
-pip install --user pipx
+# Install chroma-mcp
+pip3 install chroma-mcp
 
-# Install uvx
-pipx install uvx
+# Verify it's installed
+python3 -m chroma_mcp --help
+
+# If you get "No module named chroma_mcp":
+# Make sure you're using the correct Python/pip
+which python3
+which pip3
 ```
 
 ### Missing Data

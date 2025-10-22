@@ -23,8 +23,9 @@ This project requires a Google API key for the Generative AI features.
    CHROMA_URL=http://localhost:8000
    CHROMA_EMBEDDING_FUNCTION=default  # Options: default, openai, cohere, jina, voyageai, roboflow
    
-   # If using OpenAI embeddings (optional, requires API key):
-   # OPENAI_API_KEY=sk-your-openai-api-key
+   # Note: GOOGLE_API_KEY above is for the AI model (Google Gemini)
+   # ChromaDB embeddings are separate and use their own API keys if needed
+   # Default embedding (MiniLM-L6-v2) doesn't need an API key
    ```
 
 3. **Get your Google API key**:

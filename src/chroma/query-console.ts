@@ -3,7 +3,8 @@ import { ChromaClient } from 'chromadb';
 import * as readline from 'readline';
 
 const chromaUrl = process.env.CHROMA_URL || 'http://localhost:8000';
-const client = new ChromaClient({ path: chromaUrl });
+const url = new URL(chromaUrl);
+const client = new ChromaClient({ host: url.hostname, port: parseInt(url.port) || 8000 });
 
 // Create readline interface
 const rl = readline.createInterface({

@@ -243,9 +243,8 @@ Helpful Response
 
 **Run:**
 ```bash
-# 1. Install uvx (one-time)
-brew install pipx  # or: pip install --user pipx
-pipx install uvx
+# 1. Install chroma-mcp (one-time)
+pip3 install chroma-mcp
 
 # 2. Start ChromaDB
 yarn chroma:start
@@ -271,12 +270,17 @@ The example shows how to configure embeddings:
 
 ```bash
 # In .env
-CHROMA_EMBEDDING_FUNCTION=default  # MiniLM-L6-v2 (free, local)
-# Or: openai, cohere, jina, voyageai, roboflow
+GOOGLE_API_KEY=your-key  # Required: For AI model (Google Gemini)
+CHROMA_EMBEDDING_FUNCTION=default  # Optional: MiniLM-L6-v2 (free, local)
 
-# If using OpenAI embeddings:
-# OPENAI_API_KEY=sk-your-key
+# Advanced: Use different embeddings (optional)
+# CHROMA_EMBEDDING_FUNCTION=openai
+# CHROMA_OPENAI_API_KEY=sk-your-embedding-key
 ```
+
+**Important:** 
+- **GOOGLE_API_KEY** = AI text generation (Google Gemini) - **Required**
+- **CHROMA_*_API_KEY** = Document embeddings - **Optional** (default is free)
 
 ## 📊 Comparison
 
@@ -407,8 +411,8 @@ GOOGLE_API_KEY=your-key-here
 CHROMA_URL=http://localhost:8000
 EOF
 
-# 2. Install uvx (one-time)
-brew install pipx && pipx install uvx
+# 2. Install chroma-mcp (one-time)
+pip3 install chroma-mcp
 
 # 3. Start ChromaDB
 yarn chroma:start
