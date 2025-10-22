@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "mcp:math": "tsx src/mcp/math-io.ts",
-    "mcp:weather": "tsx src/mcp/weather-http.ts",
+    "mcp:weather": "NODE_NO_WARNINGS=1 node --import tsx/esm src/mcp/weather-http.ts",
     "mcp:elasticsearch": "tsx src/rag/elasticsearch-mcp-server.ts",
     "mcp:elasticsearch-http": "NODE_NO_WARNINGS=1 node --import tsx/esm src/rag/elasticsearch-mcp-http-server.ts",
     "rag:case1": "tsx \"test/rag/case1:direct-rag-example.ts\"",

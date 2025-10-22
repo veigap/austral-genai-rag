@@ -15,3 +15,4 @@ COPY . .
 # Default command (overridden by docker-compose)
 CMD ["yarn", "chroma:data:setup"]
 
+
