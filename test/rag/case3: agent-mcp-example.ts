@@ -8,7 +8,6 @@ import { MultiServerMCPClient } from "@langchain/mcp-adapters";
 // 2. Start MCP HTTP server: yarn mcp:elasticsearch-http
 
 const MCP_SERVER_URL = 'http://localhost:8001/mcp';
-const MCP_SERVER_PORT = 8001;
 
 // AI model
 const model = new ChatGoogleGenerativeAI({

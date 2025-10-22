@@ -1,9 +1,19 @@
 import 'dotenv/config';
 import { Client } from '@elastic/elasticsearch';
+import { readFileSync } from 'fs';
+import { fileURLToPath } from 'url';
+import { dirname, join } from 'path';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 const client = new Client({
     node: process.env.ELASTICSEARCH_URL || 'http://localhost:9200'
 });
+
+// Load shared product data
+const productsPath = join(__dirname, '../../data/products.json');
+const products = JSON.parse(readFileSync(productsPath, 'utf-8'));
 
 async function setupSampleData() {
     try {
@@ -13,49 +23,7 @@ async function setupSampleData() {
 
         // Create products index with sample data
         console.log('📦 Creating products index...');
-        
-        const products = [
-            {
-                id: '1',
-                name: 'MacBook Pro 16"',
-                category: 'Laptop',
-                price: 2499,
-                description: 'Powerful laptop with M3 Pro chip, 16GB RAM, 512GB SSD',
-                stock: 15
-            },
-            {
-                id: '2',
-                name: 'Dell XPS 13',
-                category: 'Laptop',
-                price: 1299,
-                description: 'Compact laptop with Intel i7, 16GB RAM, 256GB SSD',
-                stock: 8
-            },
-            {
-                id: '3',
-                name: 'Lenovo ThinkPad X1',
-                category: 'Laptop',
-                price: 1599,
-                description: 'Business laptop with Intel i7, 32GB RAM, 1TB SSD',
-                stock: 12
-            },
-            {
-                id: '4',
-                name: 'Apple Magic Mouse',
-                category: 'Accessory',
-                price: 79,
-                description: 'Wireless rechargeable mouse',
-                stock: 50
-            },
-            {
-                id: '5',
-                name: 'Logitech MX Master 3',
-                category: 'Accessory',
-                price: 99,
-                description: 'Advanced wireless mouse for productivity',
-                stock: 30
-            }
-        ];
+        console.log(`📄 Loading products from: data/products.json`);
 
         for (const product of products) {
             await client.index({

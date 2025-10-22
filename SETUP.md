@@ -15,7 +15,16 @@ This project requires a Google API key for the Generative AI features.
    ```bash
    # .env
    GOOGLE_API_KEY=your-actual-api-key-here
+   
+   # Elasticsearch Configuration
    ELASTICSEARCH_URL=http://localhost:9200
+   
+   # ChromaDB Configuration
+   CHROMA_URL=http://localhost:8000
+   CHROMA_EMBEDDING_FUNCTION=default  # Options: default, openai, cohere, jina, voyageai, roboflow
+   
+   # If using OpenAI embeddings (optional, requires API key):
+   # OPENAI_API_KEY=sk-your-openai-api-key
    ```
 
 3. **Get your Google API key**:

@@ -1,0 +1,47 @@
+version: '3.8'
+
+services:
+  chroma:
+    image: chromadb/chroma:0.4.24
+    container_name: chroma-mcp
+    ports:
+      - "8000:8000"
+    volumes:
+      - chroma_data:/chroma/chroma
+    environment:
+      - IS_PERSISTENT=TRUE
+      - ANONYMIZED_TELEMETRY=FALSE
+      - CHROMA_SERVER_AUTHN_CREDENTIALS_FILE=
+      - CHROMA_SERVER_AUTHN_PROVIDER=
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/api/v1/heartbeat"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - chroma
+
+  # Data initialization service (runs once then exits)
+  data-init:
+    build:
+      context: ../..
+      dockerfile: scripts/chroma-mcp/Dockerfile
+    container_name: chroma-data-init
+    depends_on:
+      chroma:
+        condition: service_healthy
+    environment:
+      - CHROMA_URL=http://chroma:8000
+    command: ["yarn", "chroma:data:setup"]
+    networks:
+      - chroma
+    restart: "no"
+
+volumes:
+  chroma_data:
+    driver: local
+
+networks:
+  chroma:
+    driver: bridge
+

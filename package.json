@@ -11,11 +11,16 @@
     "rag:case1": "tsx \"test/rag/case1:direct-rag-example.ts\"",
     "rag:case2": "tsx \"test/rag/case2: agent-rag-example.ts\"",
     "rag:case3": "tsx \"test/rag/case3: agent-mcp-example.ts\"",
+    "rag:case4": "tsx \"test/rag/case4: agent-mcp-chroma.ts\"",
     "test-mcp-io": "tsx test/mcp/test-mcp-io-client.ts",
     "test-mcp-http": "tsx test/mcp/test-mcp-http-client.ts",
     "elasticsearch:start": "docker-compose -f scripts/es-mcp/docker-compose.yml up --build",
     "elasticsearch:stop": "docker-compose -f scripts/es-mcp/docker-compose.yml down",
-    "data:setup": "tsx src/rag/setup-data.ts"
+    "chroma:start": "docker-compose -f scripts/chroma-mcp/docker-compose.yml up --build",
+    "chroma:stop": "docker-compose -f scripts/chroma-mcp/docker-compose.yml down",
+    "chroma:console": "tsx src/chroma/query-console.ts",
+    "data:setup": "tsx src/rag/setup-data.ts",
+    "chroma:data:setup": "tsx src/chroma/setup-data.ts"
   },
   "dependencies": {
     "@elastic/elasticsearch": "^8.11.0",
@@ -27,6 +32,7 @@
     "@langchain/openai": "^1.0.0-alpha.3",
     "@modelcontextprotocol/sdk": "^1.20.1",
     "@types/node-fetch": "^2.6.13",
+    "chromadb": "^3.0.17",
     "dotenv": "^17.2.3",
     "express": "^5.1.0",
     "json-rpc-2.0": "^1.7.1",
