@@ -27,7 +27,7 @@ ChromaDB is a vector database designed for AI applications. Unlike Elasticsearch
 │       ↑                                          │
 │       │ stdio                                    │
 │       │                                          │
-│  case4: agent-mcp-chroma.ts                      │
+│  case4-agent-mcp-chroma.ts                      │
 │  (LangChain Agent)                               │
 └──────────────────────────────────────────────────┘
 ```
@@ -79,7 +79,7 @@ yarn rag:case4
 
 ### Case 4: Agent with Chroma MCP
 
-Located at: `test/rag/case4: agent-mcp-chroma.ts`
+Located at: `test/rag/case4-agent-mcp-chroma.ts`
 
 **Flow:**
 1. Client spawns `chroma-mcp` Python server via stdio using `python3 -m chroma_mcp`

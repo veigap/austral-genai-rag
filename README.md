@@ -86,10 +86,10 @@ yarn chroma:console
 │   │   ├── test-mcp-stdio-client.ts
 │   │   └── test-mcp-http-client.ts
 │   └── rag/                        # RAG examples (⭐ START HERE)
-│       ├── case1:direct-rag-example.ts        # Direct RAG
-│       ├── case2: agent-rag-example.ts        # Agent + ES
-│       ├── case3: agent-mcp-example.ts        # Agent + MCP + ES
-│       ├── case4: agent-mcp-chroma.ts         # Agent + MCP + Chroma
+│       ├── case1-direct-rag-example.ts        # Direct RAG
+│       ├── case2-agent-rag-example.ts        # Agent + ES
+│       ├── case3-agent-mcp-example.ts        # Agent + MCP + ES
+│       ├── case4-agent-mcp-chroma.ts         # Agent + MCP + Chroma
 │       └── README.md               # Examples comparison
 │
 ├── data/

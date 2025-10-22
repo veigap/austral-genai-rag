@@ -233,7 +233,7 @@ yarn rag:case3
   - `../src/rag/elasticsearch-mcp-server.ts`
 - **Test clients**:
   - `../test/mcp/test-mcp-stdio-client.ts`
-  - `../test/rag/case3: agent-mcp-example.ts`
+  - `../test/rag/case3-agent-mcp-example.ts`
 
 ## MCP Protocol Documentation
 

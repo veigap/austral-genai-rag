@@ -16,7 +16,7 @@ See [SETUP.md](../../SETUP.md) for details.
 
 ## 📁 Files
 
-### `case1:direct-rag-example.ts` ⭐ **Simplest RAG**
+### `case1-direct-rag-example.ts` ⭐ **Simplest RAG**
 
 A straightforward RAG example **without MCP or agents**. Perfect for learning the RAG pattern.
 
@@ -100,7 +100,7 @@ Based on your need for a powerful work laptop, I'd recommend:
 All are in stock and ready to ship!
 ```
 
-### `case2: agent-rag-example.ts` - **Agent with Tools** ⭐
+### `case2-agent-rag-example.ts` - **Agent with Tools** ⭐
 
 Uses LangChain agent with a tool to search Elasticsearch. The agent decides when to use the search tool.
 
@@ -146,7 +146,7 @@ yarn rag:case2
 - ✅ Multi-turn conversations
 - ✅ Tool calling framework
 
-### `case3: agent-mcp-example.ts` - **Agent with MCP** ⭐⭐
+### `case3-agent-mcp-example.ts` - **Agent with MCP** ⭐⭐
 
 Agent that uses the MCP Elasticsearch server through the `@langchain/mcp-adapters`. Best of both worlds!
 
@@ -203,7 +203,7 @@ yarn rag:case3
 - ✅ Production-ready pattern
 - ✅ Auto-discovered tools via `@langchain/mcp-adapters`
 
-### `case4: agent-mcp-chroma.ts` - **Agent + MCP + ChromaDB** ⭐ **Vector Search**
+### `case4-agent-mcp-chroma.ts` - **Agent + MCP + ChromaDB** ⭐ **Vector Search**
 
 Agent that uses the official `chroma-mcp` Python server for semantic similarity search.
 
