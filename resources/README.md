@@ -230,7 +230,7 @@ yarn rag:case3
 - **stdio servers**: 
   - `../src/mcp/math-io.ts`
   - `../src/mcp/weather-http.ts` (now uses stdio despite the name)
-  - `../src/rag/elasticsearch-mcp-server.ts`
+  - `../src/rag/elasticsearch-mcp-http-server.ts`
 - **Test clients**:
   - `../test/mcp/test-mcp-stdio-client.ts`
   - `../test/rag/case3-agent-mcp-example.ts`

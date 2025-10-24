@@ -5,7 +5,7 @@ import { MultiServerMCPClient } from "@langchain/mcp-adapters";
 
 // Prerequisites:
 // 1. Start Elasticsearch: yarn elasticsearch:start
-// 2. Start MCP HTTP server: yarn mcp:elasticsearch-http
+// 2. Start MCP HTTP server: yarn mcp:elasticsearch
 
 const MCP_SERVER_URL = 'http://localhost:8001/mcp';
 

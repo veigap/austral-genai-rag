@@ -16,3 +16,4 @@ COPY . .
 CMD ["yarn", "chroma:data:setup"]
 
 
+

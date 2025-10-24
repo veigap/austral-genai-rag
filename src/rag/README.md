@@ -7,7 +7,7 @@ This directory contains an Elasticsearch integration using the Model Context Pro
 ```
 src/rag/
 ├── README.md                       # This file
-├── elasticsearch-mcp-server.ts     # MCP server for Elasticsearch (HTTP)
+├── elasticsearch-mcp-http-server.ts # MCP server for Elasticsearch (HTTP)
 └── setup-data.ts                   # Script to populate sample data
 
 test/rag/

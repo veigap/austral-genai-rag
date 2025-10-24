@@ -203,7 +203,6 @@ yarn rag:case3
 - ✅ Production-ready pattern
 - ✅ Auto-discovered tools via `@langchain/mcp-adapters`
 
-### `case4-agent-mcp-chroma.ts` - **Agent + MCP + ChromaDB** ⭐ **Vector Search**
 
 Agent that uses the official `chroma-mcp` Python server for semantic similarity search.
 
@@ -253,7 +252,6 @@ yarn chroma:start
 yarn chroma:console
 
 # 4. Run agent
-yarn rag:case4
 ```
 
 **Benefits:**
@@ -421,7 +419,7 @@ yarn chroma:start
 yarn chroma:console
 
 # 5. Run example
-yarn rag:case4  # Agent + MCP + Semantic Search
+  # Agent + MCP + Semantic Search
 ```
 
 ## 🔍 Debug Output

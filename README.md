@@ -57,7 +57,6 @@ yarn rag:case3    # Production MCP
 yarn chroma:start
 
 # Terminal 2: Run example
-yarn rag:case4    # Agent + MCP + Vectors
 
 # Explore data
 yarn chroma:console
@@ -72,7 +71,6 @@ yarn chroma:console
 │   │   ├── math-io.ts              # Math operations
 │   │   └── weather-http.ts         # Weather service  
 │   ├── rag/                        # RAG with Elasticsearch
-│   │   ├── elasticsearch-mcp-server.ts      # MCP server (stdio)
 │   │   ├── elasticsearch-mcp-http-server.ts # MCP server (HTTP)
 │   │   ├── setup-data.ts           # Data initialization
 │   │   └── README.md               # 📖 Elasticsearch RAG guide
@@ -89,7 +87,6 @@ yarn chroma:console
 │       ├── case1-direct-rag-example.ts        # Direct RAG
 │       ├── case2-agent-rag-example.ts        # Agent + ES
 │       ├── case3-agent-mcp-example.ts        # Agent + MCP + ES
-│       ├── case4-agent-mcp-chroma.ts         # Agent + MCP + Chroma
 │       └── README.md               # Examples comparison
 │
 ├── data/
@@ -195,7 +192,6 @@ User Query → Agent → MCP Adapter → HTTP MCP Server → ES → Response
 
 ```bash
 yarn chroma:start
-yarn rag:case4
 ```
 
 **Architecture:**
@@ -257,7 +253,7 @@ yarn chroma:console         # Interactive query console ⭐
 yarn rag:case1              # Direct RAG (Elasticsearch)
 yarn rag:case2              # Agent + ES tools
 yarn rag:case3              # Agent + MCP + ES (production)
-yarn rag:case4              # Agent + MCP + ChromaDB (vectors)
+              # Agent + MCP + ChromaDB (vectors)
 ```
 
 ### MCP Servers
@@ -356,7 +352,6 @@ yarn chroma:console
 # Try: list, peek products, query products laptop
 
 # Terminal 3: Run agent
-yarn rag:case4
 ```
 
 **What to observe:**
@@ -624,7 +619,7 @@ yarn rag:case1  # Watch the magic happen! ✨
 ```bash
 echo "GOOGLE_API_KEY=your-key" > .env
 yarn chroma:start
-yarn rag:case4  # Explore vector search! 🚀
+  # Explore vector search! 🚀
 ```
 
 ### Explore & Learn:

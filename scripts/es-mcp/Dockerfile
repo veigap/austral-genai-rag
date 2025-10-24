@@ -9,8 +9,9 @@ COPY package.json yarn.lock tsconfig.json ./
 # Install dependencies
 RUN yarn install --production=false
 
-# Copy all source files
+# Copy all source files and data
 COPY src/ ./src/
+COPY data/ ./data/
 
 # Expose HTTP port
 EXPOSE 8001
