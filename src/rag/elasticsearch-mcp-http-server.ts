@@ -39,8 +39,15 @@ const indexDocumentSchema = {
 
 const getIndicesSchema = {};
 
-// Register tools using McpServer API
-mcp.tool('elasticsearch_search', 'Search documents in Elasticsearch index', searchSchema, async (args) => {
+// Register tools using the correct MCP pattern
+mcp.registerTool(
+    'elasticsearch_search',
+    {
+        title: 'Elasticsearch Search',
+        description: 'Search documents in Elasticsearch index',
+        inputSchema: searchSchema
+    },
+    async (args) => {
     const { index, query, size = 10 } = args;
     
     const esQuery = {
@@ -68,18 +75,26 @@ mcp.tool('elasticsearch_search', 'Search documents in Elasticsearch index', sear
         source: hit._source,
     }));
 
-    return {
-        content: [{
-            type: "text",
-            text: JSON.stringify({
-                total: esResult.hits.total,
-                hits,
-            }, null, 2),
-        }],
-    };
-});
+        return {
+            content: [{
+                type: "text",
+                text: JSON.stringify({
+                    total: esResult.hits.total,
+                    hits,
+                }, null, 2),
+            }],
+        };
+    }
+);
 
-mcp.tool('elasticsearch_index_document', 'Index a document in Elasticsearch', indexDocumentSchema, async (args) => {
+mcp.registerTool(
+    'elasticsearch_index_document',
+    {
+        title: 'Elasticsearch Index Document',
+        description: 'Index a document in Elasticsearch',
+        inputSchema: indexDocumentSchema
+    },
+    async (args) => {
     const { index, document, id } = args;
     
     const esResult = await esClient.index({
@@ -88,19 +103,27 @@ mcp.tool('elasticsearch_index_document', 'Index a document in Elasticsearch', in
         document,
     });
 
-    return {
-        content: [{
-            type: "text",
-            text: JSON.stringify({
-                result: esResult.result,
-                id: esResult._id,
-                index: esResult._index,
-            }, null, 2),
-        }],
-    };
-});
+        return {
+            content: [{
+                type: "text",
+                text: JSON.stringify({
+                    result: esResult.result,
+                    id: esResult._id,
+                    index: esResult._index,
+                }, null, 2),
+            }],
+        };
+    }
+);
 
-mcp.tool('elasticsearch_get_indices', 'Get list of all Elasticsearch indices', getIndicesSchema, async () => {
+mcp.registerTool(
+    'elasticsearch_get_indices',
+    {
+        title: 'Elasticsearch Get Indices',
+        description: 'Get list of all Elasticsearch indices',
+        inputSchema: getIndicesSchema
+    },
+    async () => {
     const esResult = await esClient.cat.indices({ format: 'json' });
 
     const indices = esResult.map((index: any) => ({
@@ -111,22 +134,16 @@ mcp.tool('elasticsearch_get_indices', 'Get list of all Elasticsearch indices', g
         storeSize: index['store.size'],
     }));
 
-    return {
-        content: [{
-            type: "text",
-            text: JSON.stringify(indices, null, 2),
-        }],
-    };
-});
+        return {
+            content: [{
+                type: "text",
+                text: JSON.stringify(indices, null, 2),
+            }],
+        };
+    }
+);
 
-// Create StreamableHTTP transport
-const transport = new StreamableHTTPServerTransport({
-    sessionIdGenerator: () => crypto.randomUUID(),
-    enableJsonResponse: true,
-});
-
-// Connect MCP server to transport
-await mcp.connect(transport);
+// Transport will be created per-request in the /mcp endpoint
 
 // Add health check endpoint
 app.get('/health', async (req, res) => {
@@ -145,8 +162,20 @@ app.get('/health', async (req, res) => {
     }
 });
 
-// Add MCP endpoint using the transport
+// Add MCP endpoint following the correct pattern
 app.post('/mcp', async (req, res) => {
+    const transport = new StreamableHTTPServerTransport({
+        sessionIdGenerator: undefined,
+        enableJsonResponse: true
+    });
+
+    // Connect server with transport
+    await mcp.connect(transport);
+
+    res.on('close', () => {
+        transport.close();
+    });
+
     await transport.handleRequest(req, res, req.body);
 });
 
@@ -173,7 +202,7 @@ async function main() {
         console.error('  - elasticsearch_get_indices');
         console.error('');
         console.error('💡 Test with:');
-        console.error(`   curl -X POST http://localhost:${PORT}/mcp -H "Content-Type: application/json" -d '{"jsonrpc":"2.0","id":1,"method":"tools/list"}'`);
+        console.error(`   curl -X POST http://localhost:${PORT}/mcp -H "Content-Type: application/json" -H "Accept: application/json, text/event-stream" -d '{"jsonrpc":"2.0","id":1,"method":"tools/list"}'`);
         console.error('');
         console.error('Ready to accept connections...');
     });

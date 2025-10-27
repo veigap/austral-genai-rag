@@ -68,8 +68,6 @@ yarn chroma:console
 .
 ├── src/
 │   ├── mcp/                        # MCP server examples (stdio)
-│   │   ├── math-io.ts              # Math operations
-│   │   └── weather-http.ts         # Weather service  
 │   ├── rag/                        # RAG with Elasticsearch
 │   │   ├── elasticsearch-mcp-http-server.ts # MCP server (HTTP)
 │   │   ├── setup-data.ts           # Data initialization
@@ -80,9 +78,6 @@ yarn chroma:console
 │       └── README.md               # 📖 ChromaDB RAG guide
 │
 ├── test/
-│   ├── mcp/                        # MCP client tests
-│   │   ├── test-mcp-stdio-client.ts
-│   │   └── test-mcp-http-client.ts
 │   └── rag/                        # RAG examples (⭐ START HERE)
 │       ├── case1-direct-rag-example.ts        # Direct RAG
 │       ├── case2-agent-rag-example.ts        # Agent + ES
@@ -258,8 +253,6 @@ yarn rag:case3              # Agent + MCP + ES (production)
 
 ### MCP Servers
 ```bash
-yarn mcp:math               # Math operations (stdio)
-yarn mcp:weather            # Weather service (stdio)
 yarn mcp:elasticsearch      # Elasticsearch MCP (stdio)
 yarn mcp:elasticsearch-http # Elasticsearch MCP (HTTP) ⭐
 ```
@@ -268,12 +261,6 @@ yarn mcp:elasticsearch-http # Elasticsearch MCP (HTTP) ⭐
 ```bash
 yarn data:setup             # ES data initialization
 yarn chroma:data:setup      # Chroma data initialization
-```
-
-### Tests
-```bash
-yarn test-mcp-io            # Test stdio MCP
-yarn test-mcp-http          # Test HTTP MCP
 ```
 
 ## 🖥️ Web Interfaces

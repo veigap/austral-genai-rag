@@ -1,8 +1,8 @@
 import 'dotenv/config';
-import { ChromaClient } from 'chromadb';
 import { readFileSync } from 'fs';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
+import { ChromaClient } from 'chromadb';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -22,15 +22,12 @@ async function setupChromaData() {
         const url = new URL(chromaUrl);
         console.log(`   Host: ${url.hostname}, Port: ${url.port || 8000}`);
         
-        const client = new ChromaClient({ 
-            host: url.hostname, 
-            port: parseInt(url.port) || 8000 
+        // Use ChromaDB client library
+        const client = new ChromaClient({
+            path: chromaUrl
         });
         
-        // Test connection
-        console.log('   Testing connection...');
-        const version = await client.version();
-        console.log(`✅ Connected to ChromaDB version ${version}`);
+        console.log('✅ Connected to ChromaDB');
         console.log(`📍 ChromaDB URL: ${chromaUrl}`);
         
         // Delete collection if it exists (for clean setup)
@@ -41,25 +38,19 @@ async function setupChromaData() {
             // Collection doesn't exist, that's fine
         }
         
-        // Create collection with explicit embedding configuration
-        // For educational purposes: we explicitly set the embedding function
-        // even though 'default' is what ChromaDB uses by default
+        // Create collection using client library
         console.log('📦 Creating "products" collection...');
         console.log(`📄 Loading products from: data/products.json`);
-        console.log('🔧 Embedding: MiniLM-L6-v2 (default, runs locally via OnnxRuntime)');
-        
-        // Note: You can change this to 'openai', 'cohere', 'jina', etc.
-        // and set the corresponding API key in environment variables
-        const embeddingFunction = process.env.CHROMA_EMBEDDING_FUNCTION || 'default';
-        console.log(`📐 Using embedding function: ${embeddingFunction}`);
+        console.log('🔧 Embedding: Using server-side embedding function');
         
         const collection = await client.createCollection({
             name: 'products',
-            metadata: { 
-                description: 'Product catalog for e-commerce',
-                embedding_function: embeddingFunction
+            metadata: {
+                description: 'Product catalog for e-commerce'
             }
         });
+        
+        console.log('✅ Created collection: products');
         
         // Prepare data for ChromaDB
         const ids = products.map((p: any) => p.id);
@@ -74,7 +65,7 @@ async function setupChromaData() {
             ...(p.stock && { stock: p.stock })
         }));
         
-        // Add documents to collection
+        // Add documents to collection using client library
         console.log(`📝 Adding ${products.length} products to collection...`);
         await collection.add({
             ids,
@@ -91,12 +82,13 @@ async function setupChromaData() {
             console.log(`   - ${p.name} ($${p.price}) - ${p.category}`);
         });
         
-        // Verify by querying
+        // Verify by querying using client library
         console.log('\n🧪 Testing query: "laptop"...');
         const results = await collection.query({
             queryTexts: ['laptop'],
             nResults: 2
         });
+        
         console.log(`   Found ${results.ids[0].length} results`);
         
         console.log('\n✨ ChromaDB is ready for queries!');

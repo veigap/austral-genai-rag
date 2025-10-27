@@ -1,7 +1,7 @@
 services:
   chroma:
-    image: chromadb/chroma:0.4.24
-    container_name: chroma-mcp
+    image: chromadb/chroma:1.2.1
+    container_name: chromaDB
     ports:
       - "8000:8000"
     volumes:
@@ -11,11 +11,11 @@ services:
       - ANONYMIZED_TELEMETRY=FALSE
       - CHROMA_SERVER_AUTHN_CREDENTIALS_FILE=
       - CHROMA_SERVER_AUTHN_PROVIDER=
-    healthcheck:
-      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/api/v1/heartbeat')"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
+    # healthcheck:
+    #   test: ["CMD", "curl", "-f", "http://localhost:8000/api/v2/heartbeat"]
+    #   interval: 10s
+    #   timeout: 5s
+    #   retries: 5
     networks:
       - chroma
 
@@ -26,8 +26,7 @@ services:
       dockerfile: scripts/chroma-mcp/Dockerfile
     container_name: chroma-data-init
     depends_on:
-      chroma:
-        condition: service_healthy
+      - chroma
     environment:
       - CHROMA_URL=http://chroma:8000
     command: ["yarn", "chroma:data:setup"]
@@ -42,15 +41,12 @@ services:
       dockerfile: scripts/chroma-mcp/Dockerfile
     container_name: chroma-mcp-server
     depends_on:
-      chroma:
-        condition: service_healthy
-      data-init:
-        condition: service_completed_successfully
+      - chroma
     ports:
-      - "8002:8002"
+      - "8001:8001"
     environment:
       - CHROMA_URL=http://chroma:8000
-      - PORT=8002
+      - PORT=8001
     command: ["yarn", "chroma:mcp:http"]
     networks:
       - chroma

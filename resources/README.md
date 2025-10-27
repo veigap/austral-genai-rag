@@ -19,12 +19,6 @@ A Postman collection demonstrating HTTP-based MCP server testing (reference impl
 To test the actual MCP servers:
 
 ```bash
-# Math operations
-yarn mcp:math
-
-# Weather service (stdio, not HTTP)
-yarn mcp:weather
-
 # Elasticsearch
 yarn mcp:elasticsearch
 ```
@@ -36,9 +30,6 @@ These servers communicate via **stdio** and require clients that spawn them as c
 Use the TypeScript test clients:
 
 ```bash
-# Test stdio math server
-yarn test-mcp-io
-
 # For Elasticsearch MCP, use the RAG examples:
 yarn rag:case3  # Agent with MCP
 ```
@@ -218,9 +209,6 @@ const tools = await mcpClient.getTools(); // Auto-discovered!
 ### stdio Test Clients
 
 ```bash
-# Test stdio MCP server (math operations)
-yarn test-mcp-io
-
 # Test Elasticsearch MCP with agents
 yarn rag:case3
 ```
@@ -228,11 +216,8 @@ yarn rag:case3
 ### Related Files
 
 - **stdio servers**: 
-  - `../src/mcp/math-io.ts`
-  - `../src/mcp/weather-http.ts` (now uses stdio despite the name)
   - `../src/rag/elasticsearch-mcp-http-server.ts`
 - **Test clients**:
-  - `../test/mcp/test-mcp-stdio-client.ts`
   - `../test/rag/case3-agent-mcp-example.ts`
 
 ## MCP Protocol Documentation
