@@ -1,0 +1,22 @@
+{
+  "mcpServers": {
+    "elasticsearch-mcp": {
+      "command": "node",
+      "args": ["--import", "tsx/esm", "./src/rag/elasticsearch-mcp-http-server.ts"],
+      "env": {
+        "ELASTICSEARCH_URL": "http://localhost:9200",
+        "PORT": "8001",
+        "NODE_NO_WARNINGS": "1"
+      }
+    },
+    "chromadb-mcp": {
+      "command": "node",
+      "args": ["--import", "tsx/esm", "./src/chroma/chroma-mcp-http-server.ts"], 
+      "env": {
+        "CHROMA_URL": "http://localhost:8000",
+        "PORT": "8001",
+        "NODE_NO_WARNINGS": "1"
+      }
+    }
+  }
+}

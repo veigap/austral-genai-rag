@@ -36,6 +36,53 @@ This project requires a Google API key for the Generative AI features.
 
 **Note**: The `.env` file is automatically loaded using the `dotenv` package at the start of each executable script. No additional configuration is needed!
 
+## Cursor IDE Integration ⭐
+
+**MCP servers are automatically configured for Cursor IDE!**
+
+### What's Included
+
+The project automatically creates MCP configuration files:
+- **Global**: `~/.cursor/mcp.json` (works across all projects)
+- **Project**: `.cursor/mcp.json` (project-specific)
+
+### Available MCP Servers in Cursor
+
+1. **Elasticsearch MCP Server**
+   - Tools: `elasticsearch_search`, `elasticsearch_index_document`, `elasticsearch_get_indices`
+   - Purpose: Full-text search and document management
+
+2. **ChromaDB MCP Server**  
+   - Tools: `chroma_query_collection`, `chroma_list_collections`, `chroma_get_collection_info`
+   - Purpose: Vector search and semantic similarity
+
+### How to Use
+
+1. **Start the required services**:
+   ```bash
+   # For Elasticsearch tools
+   yarn elasticsearch:start
+   
+   # For ChromaDB tools  
+   yarn chroma:start
+   ```
+
+2. **Restart Cursor IDE** to load the MCP configuration
+
+3. **Tools appear automatically** in Cursor's MCP panel
+
+4. **Use the tools** directly in Cursor for search and data management
+
+### Configuration Details
+
+The MCP servers use relative paths and are pre-configured with:
+- ✅ Correct environment variables
+- ✅ Proper command arguments
+- ✅ TypeScript execution via tsx
+- ✅ Error handling and logging
+
+No additional setup required - just restart Cursor after running the tutorial!
+
 ### Security Note
 
 ⚠️ **IMPORTANT**: Never commit your `.env` file to version control! 

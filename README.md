@@ -38,7 +38,17 @@ CHROMA_EMBEDDING_FUNCTION=default
 
 📖 **See [SETUP.md](SETUP.md) for detailed setup instructions**
 
-### 3. Choose Your Path
+### 3. Cursor IDE Integration (Bonus!) ⭐
+
+**MCP servers are pre-configured for Cursor IDE!**
+
+After setup, restart Cursor and you'll have access to:
+- **Elasticsearch tools**: Search, index, and manage documents
+- **ChromaDB tools**: Vector search and collection management
+- **Auto-discovery**: Tools appear automatically in Cursor
+- **No additional setup**: Just restart Cursor after running the tutorial
+
+### 4. Choose Your Path
 
 **Path A: Elasticsearch (Full-Text Search)**
 ```bash
@@ -257,6 +267,25 @@ yarn mcp:elasticsearch      # Elasticsearch MCP (stdio)
 yarn mcp:elasticsearch-http # Elasticsearch MCP (HTTP) ⭐
 ```
 
+### Cursor IDE Integration ⭐
+```bash
+# MCP servers are pre-configured for Cursor IDE!
+# Configuration files:
+# - ~/.cursor/mcp.json (global)
+# - .cursor/mcp.json (project-specific)
+
+# Available MCP servers in Cursor:
+# - elasticsearch-mcp: Search and index documents
+# - chromadb-mcp: Vector search and collections
+```
+
+**What you get in Cursor:**
+- ✅ **Auto-discovery**: Tools appear automatically in Cursor
+- ✅ **No setup needed**: Just restart Cursor after configuration
+- ✅ **Both servers**: Elasticsearch + ChromaDB MCP servers
+- ✅ **Relative paths**: Portable configuration
+- ✅ **Environment ready**: All env vars pre-configured
+
 ### Data Management
 ```bash
 yarn data:setup             # ES data initialization
@@ -409,7 +438,37 @@ chroma> query products laptop 2
    2. [0.4122] Dell XPS 13
 ```
 
-### 5. Embedding Configuration (Educational)
+### 5. Cursor IDE Integration ⭐
+
+**Pre-configured MCP servers** ready to use in Cursor:
+
+```json
+// ~/.cursor/mcp.json (automatically created)
+{
+  "mcpServers": {
+    "elasticsearch-mcp": {
+      "command": "node",
+      "args": ["--import", "tsx/esm", "./src/rag/elasticsearch-mcp-http-server.ts"],
+      "env": { "ELASTICSEARCH_URL": "http://localhost:9200" }
+    },
+    "chromadb-mcp": {
+      "command": "node", 
+      "args": ["--import", "tsx/esm", "./src/chroma/chroma-mcp-http-server.ts"],
+      "env": { "CHROMA_URL": "http://localhost:8000" }
+    }
+  }
+}
+```
+
+**Available tools in Cursor:**
+- `elasticsearch_search` - Search documents
+- `elasticsearch_index_document` - Index new documents  
+- `elasticsearch_get_indices` - List all indices
+- `chroma_query_collection` - Semantic search
+- `chroma_list_collections` - List collections
+- `chroma_get_collection_info` - Collection details
+
+### 6. Embedding Configuration (Educational)
 
 ChromaDB example shows how to configure embeddings:
 
